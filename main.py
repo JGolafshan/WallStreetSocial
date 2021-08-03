@@ -3,23 +3,7 @@ import pandas as pd
 from pmaw import PushshiftAPI
 import re
 import psycopg2
-
 import os
-
-
-# input true for sandbox
-def sandbox(change):
-    if change:
-        # Set IEX Finance API Token for Sandbox test mode
-        os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
-        os.environ['IEX_TOKEN'] = 'Tsk_4060833567884b49870980c4a917aa92'
-    else:
-        # Real
-        os.environ['IEX_API_VERSION'] = 'stable'
-        os.environ['IEX_TOKEN'] = ''
-
-
-sandbox(True)
 
 before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp())
 after = int(dt.datetime(2021, 1, 1, 0, 0).timestamp())
@@ -57,8 +41,8 @@ def verify_tickers(tickers):
     mentioned_tickers = []
     for ticker in tickers:
         try:
-            #This need to be modifed because we do not have IEX TOKEN
-            #price = Stock(ticker[1:]).get_company()
+            # This need to be modifed because we do not have IEX TOKEN
+            # price = Stock(ticker[1:]).get_company()
             mentioned_tickers.append(ticker[1:])
         except Exception as e:
             pass
