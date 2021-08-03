@@ -1,0 +1,14 @@
+/venv/
+/.idea/
+/keno_api.egg-info/
+/__pycache__/
+/.idea/
+/.github/
+/dist/
+
+*.gz
+*.txt
+*.pyc
+
+build/lib/keno/keno_app.py
+kenoAPI.egg-info/PKG-INFO
