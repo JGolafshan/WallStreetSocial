@@ -17,7 +17,7 @@ def get_reddit_comments(subreddit, before, after):
     """
     api = PushshiftAPI()
     comments = api.search_comments(subreddit=subreddit, before=before, after=after)
-    comments_df = pd.Dataframe(comments)
+    comments_df = pd.DataFrame(comments)
     return comments_df
 
 
