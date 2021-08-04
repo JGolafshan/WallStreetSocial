@@ -18,8 +18,16 @@ def get_reddit_comments(subreddit, before, after):
     api = PushshiftAPI()
     comments = api.search_comments(subreddit=subreddit, before=before, after=after)
     comments_df = pd.DataFrame(comments)
+    comments_df = clean_comments_dataframe(comments_df)
     return comments_df
 
+def clean_comments_dataframe(comments_df):
+    comments_df = comments_df.drop(['all_awardings','associated_award','author_flair_background_color','author_flair_css_class','author_flair_richtext',
+              'author_flair_template_id','author_flair_text','author_flair_text_color','author_flair_type',
+              'author_fullname','author_patreon_flair','author_premium','awarders','collapsed_because_crowd_control',
+              'comment_type','gildings','is_submitter','locked','no_follow','send_replies','top_awarded_type',
+              'treatment_tags','author_cakeday','distinguished'], axis = 1)
+    return comments_df
 
 def find_tickers(comment):
     """
