@@ -64,21 +64,51 @@ def create_master_ticker_list(comments):
     return verified_tickers
 
 
-# establishing the connection
-conn = psycopg2.connect(
-    database="postgres", user='postgres', password='wallstreetbets', host='127.0.0.1', port='5432'
-)
-conn.autocommit = True
+def datebase():
+    # establishing the connection
+    conn = psycopg2.connect(
+        database="postgres", user='postgres', password='123', host='127.0.0.1', port='5432'
+    )
+    conn.autocommit = True
 
-# Creating a cursor object using the cursor() method
-cursor = conn.cursor()
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
 
-# Preparing query to create a database
-sql = '''CREATE database mydb''';
+    # Preparing query to create a database
+    sql = '''CREATE database ws_t_social''';
+    cursor.execute(sql)
 
-# Creating a database
-cursor.execute(sql)
-print("Database created successfully........")
+    # Create Table
+    sql_1 = """CREATE TABLE public."Comments"
+            (
+                "CommentID" integer,
+                "CommentDate" date,
+                "CommentText" text,
+                PRIMARY KEY ("CommentID")
+            );
 
-# Closing the connection
-conn.close()
+            ALTER TABLE public."Comments"
+                OWNER to postgres;   
+    """
+    cursor.execute(sql_1)
+
+    sql_2 = """
+        CREATE TABLE public."Tickers"
+    (
+        "TickerID" integer NOT NULL,
+        "TickerName" text,
+        "TickerSentiment" real,
+        "CommentID" integer,
+        PRIMARY KEY ("TickerID")
+    );
+    
+    ALTER TABLE public."Tickers"
+        OWNER to postgres;
+    """
+    cursor.execute(sql_2)
+
+    # Closing the connection
+    conn.close()
+
+
+datebase()
