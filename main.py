@@ -91,7 +91,8 @@ def create_master_ticker_list(comments):
         tickers = find_tickers(comment)  # get list of tickers in a comment
         mentioned_tickers = verify_tickers(tickers)  # verify if they're real
         for ticker in mentioned_tickers:
-            verified_tickers.append(ticker)
+            if ticker not in verified_tickers: #no duplicates
+                verified_tickers.append(ticker)
     return verified_tickers
 
 
