@@ -1,0 +1,29 @@
+div{
+    color: #D6D5CB;
+}
+
+.app-header {
+    padding-top: 20px;
+    height: 60px;
+    line-height: 60px;
+    border-bottom: thin lightgrey solid;
+
+}
+
+.app-header .app-header--title {
+    font-size: 22px;
+    padding-left: 5px;
+}
+
+body{
+    background-color: #333333;
+}
+
+.app-adv {
+    padding-top: 20px;
+}
+
+.graph {
+    padding-top: 20px;
+    color: #333333;
+}
