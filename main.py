@@ -21,8 +21,8 @@ def sandbox(change):
 sandbox(True)
 
 
-before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp())
-after = int(dt.datetime(2021, 1, 1, 0, 0).timestamp())
+before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp()) #used for testing, dates will be flexible
+after = int(dt.datetime(2021, 1, 1, 23, 0).timestamp()) #used for testing, dates will be flexible
 api_keys = [
     "pk_294d45992fbb4e8aa325cae768f6468b",
     "pk_f74c2c3a28b04fb6b756bb029766860b"
