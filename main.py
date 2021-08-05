@@ -2,11 +2,31 @@ import datetime as dt
 import pandas as pd
 from pmaw import PushshiftAPI
 import re
+from iexfinance.stocks import Stock
+from iexfinance.stocks import get_historical_data
 import psycopg2
 import os
 
+# input true for sandbox
+def sandbox(change):
+  if change:
+    # Set IEX Finance API Token for Sandbox test mode
+    os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
+    os.environ['IEX_TOKEN'] = 'Tsk_4060833567884b49870980c4a917aa92'
+  else:
+    # Real
+    os.environ['IEX_API_VERSION'] = 'stable'
+    os.environ['IEX_TOKEN'] = ''
+
+sandbox(True)
+
+
 before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp())
 after = int(dt.datetime(2021, 1, 1, 0, 0).timestamp())
+api_keys = [
+    "pk_294d45992fbb4e8aa325cae768f6468b",
+    "pk_f74c2c3a28b04fb6b756bb029766860b"
+]
 
 
 def get_reddit_comments(subreddit, before, after):
@@ -21,13 +41,17 @@ def get_reddit_comments(subreddit, before, after):
     comments_df = clean_comments_dataframe(comments_df)
     return comments_df
 
+
 def clean_comments_dataframe(comments_df):
-    comments_df = comments_df.drop(['all_awardings','associated_award','author_flair_background_color','author_flair_css_class','author_flair_richtext',
-              'author_flair_template_id','author_flair_text','author_flair_text_color','author_flair_type',
-              'author_fullname','author_patreon_flair','author_premium','awarders','collapsed_because_crowd_control',
-              'comment_type','gildings','is_submitter','locked','no_follow','send_replies','top_awarded_type',
-              'treatment_tags','author_cakeday','distinguished'], axis = 1)
+    comments_df = comments_df.drop(
+        ['all_awardings', 'associated_award', 'author_flair_background_color', 'author_flair_css_class',
+         'author_flair_richtext',
+         'author_flair_template_id', 'author_flair_text', 'author_flair_text_color', 'author_flair_type',
+         'author_fullname', 'author_patreon_flair', 'author_premium', 'awarders', 'collapsed_because_crowd_control',
+         'comment_type', 'gildings', 'is_submitter', 'locked', 'no_follow', 'send_replies', 'top_awarded_type',
+         'treatment_tags', 'author_cakeday', 'distinguished'], axis=1)
     return comments_df
+
 
 def find_tickers(comment):
     """
@@ -49,8 +73,7 @@ def verify_tickers(tickers):
     mentioned_tickers = []
     for ticker in tickers:
         try:
-            # This need to be modifed because we do not have IEX TOKEN
-            # price = Stock(ticker[1:]).get_company()
+            price = Stock(ticker[1:]).get_company()
             mentioned_tickers.append(ticker[1:])
         except Exception as e:
             pass

@@ -3,8 +3,9 @@ div{
 }
 
 .app-header {
-    padding-top: 20px;
-    height: 60px;
+    padding-top: 80px;
+
+    height: 120px;
     line-height: 60px;
     border-bottom: thin lightgrey solid;
 

@@ -20,7 +20,7 @@ ts = TimeSeries(key=av_key, output_format="csv")
 fd = FundamentalData(key=av_key, output_format="json")
 
 # select stock ticker and create AV objects
-stock = "IBM"
+stock = "TSLA"
 fd_real = fd.get_company_overview(stock).__getitem__(0)
 ts_real = ts.get_weekly(stock).__getitem__(0)
 ts_real = pd.DataFrame.from_records(ts_real)
@@ -45,12 +45,27 @@ app.layout = html.Div(
 
         # Stock Info
         html.Div(
-            className="app-header",
+            className="app-header app-adv",
             children=[
                 dbc.Row([
-                    dbc.Col([html.H2(fd_real.get('Name'))]),
-                    dbc.Col([html.H2(fd_real.get('Symbol'))])
+                    dbc.Col([html.H2(fd_real.get('Name'))],className="col-2",),
+                    dbc.Col([html.H2(fd_real.get('Symbol'))],className="col-2",),
                 ], align="baseline"),
+
+                dbc.Row([
+                    dbc.Col([
+                        html.H5(" TODAY'S CHANGE"),
+                        html.H3(" TODAY'S CHANGE")
+                    ]),
+                    dbc.Col([
+                        html.H5("VOLUME"),
+                        html.H3("VOLUME")
+                    ]),
+                    dbc.Col([
+                        html.H5("MARKET CAPITALISATION"),
+                        html.H3(fd_real.get("MarketCapitalization"))
+                    ])
+                ]),
             ]),
 
         # Stock Graph
