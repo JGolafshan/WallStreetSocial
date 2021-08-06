@@ -21,12 +21,9 @@ def sandbox(change):
 sandbox(True)
 
 
-before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp()) #used for testing, dates will be flexible
-after = int(dt.datetime(2021, 1, 1, 23, 0).timestamp()) #used for testing, dates will be flexible
-api_keys = [
-    "pk_294d45992fbb4e8aa325cae768f6468b",
-    "pk_f74c2c3a28b04fb6b756bb029766860b"
-]
+before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp())
+after = int(dt.datetime(2021, 1, 1, 0, 0).timestamp())
+
 
 
 def get_reddit_comments(subreddit, before, after):
@@ -91,8 +88,7 @@ def create_master_ticker_list(comments):
         tickers = find_tickers(comment)  # get list of tickers in a comment
         mentioned_tickers = verify_tickers(tickers)  # verify if they're real
         for ticker in mentioned_tickers:
-            if ticker not in verified_tickers: #no duplicates
-                verified_tickers.append(ticker)
+            verified_tickers.append(ticker)
     return verified_tickers
 
 
