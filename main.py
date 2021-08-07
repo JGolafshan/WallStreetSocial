@@ -49,7 +49,13 @@ def clean_comments_dataframe(comments_df):
          'treatment_tags', 'author_cakeday', 'distinguished'], axis=1)
     return comments_df
 
-
+def comments_to_csv(comments_df):
+    """
+    Saves down comments_df to a csv for loading into a data table
+    """
+    file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M") + '.csv'
+    return comments_df.to_csv(file_name, encoding = 'utf-8-sig', index = False)
+  
 def find_tickers(comment):
     """
     Creates an initial list of "tickers" in the form $XYZ to be verified by sending the string to IEX. If we get a price
