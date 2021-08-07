@@ -4,7 +4,6 @@ from pmaw import PushshiftAPI
 import re
 from iexfinance.stocks import Stock
 from iexfinance.stocks import get_historical_data
-import psycopg2
 import os
 
 # input true for sandbox
@@ -103,11 +102,11 @@ def datebase():
     cursor = conn.cursor()
 
     # Preparing query to create a database
-    sql = '''CREATE database ws_t_social''';
-    cursor.execute(sql)
+    create_db = '''CREATE database ws_t_social''';
+    cursor.execute(create_db)
 
     # Create Table
-    sql_1 = """CREATE TABLE public."Comments"
+    create_comment_table = """CREATE TABLE public."Comments"
             (
                 "CommentID" integer,
                 "CommentDate" date,
@@ -118,9 +117,9 @@ def datebase():
             ALTER TABLE public."Comments"
                 OWNER to postgres;   
     """
-    cursor.execute(sql_1)
+    cursor.execute(create_comment_table)
 
-    sql_2 = """
+    create_ticker_table = """
         CREATE TABLE public."Tickers"
     (
         "TickerID" integer NOT NULL,
@@ -133,7 +132,7 @@ def datebase():
     ALTER TABLE public."Tickers"
         OWNER to postgres;
     """
-    cursor.execute(sql_2)
+    cursor.execute(create_ticker_table)
 
     # Closing the connection
     conn.close()

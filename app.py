@@ -80,7 +80,7 @@ app.layout = html.Div(
             ]),
         # Stock Graph
         html.Div(
-            className="graph",
+            className="graph container-md",
             children=[
                 dcc.Graph(
                     id="basic",
