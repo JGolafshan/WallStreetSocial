@@ -4,10 +4,15 @@ import psycopg2
 class Database:
     def __init__(self):
         self.conn = psycopg2.connect(
+
             database="WSS", user='postgres', password='123', host='127.0.0.1', port='5432'
         )
         self.cursor = self.conn.cursor()
         self.conn.autocommit = True
+
+    def createFromExisting(self, muliple_files=[]):
+        for file in muliple_files:
+            open_file = open(file=file)
 
     def createDatabase(self, name):
         sqlCreateDatabase = f"""CREATE database {name} ;"""
