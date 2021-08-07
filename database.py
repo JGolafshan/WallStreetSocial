@@ -25,12 +25,11 @@ class Database:
         self.cursor.execute(create_comment_table)
 
     def update(self, query=
-                    """"
+    """"
                     INSERT INTO public."Comments"("CommentsID",  "CommentsText")
                     VALUES (0,  'sssss');
                     """
-                    ):
-
+               ):
         return self.cursor.execute(query)
 
     def query(self):
