@@ -1,4 +1,5 @@
 import psycopg2
+import os
 
 
 class Database:
@@ -9,10 +10,13 @@ class Database:
         )
         self.cursor = self.conn.cursor()
         self.conn.autocommit = True
+        self.dir_name = os.path.dirname(os.path.abspath(__file__))
 
-    def createFromExisting(self, muliple_files=[]):
-        for file in muliple_files:
-            open_file = open(file=file)
+    def createFromExisting(self, file):
+        file = f"{self.dir_name}\dependencies\{file}"
+        read_doc = open(file, "r")
+        toSQL = read_doc.read()
+        return self.cursor.execute(toSQL)
 
     def createDatabase(self, name):
         sqlCreateDatabase = f"""CREATE database {name} ;"""
@@ -42,4 +46,6 @@ class Database:
 
 
 db = Database()
-db.update()
+x = db.createFromExisting(file="temp_sql.txt")
+
+print(x)
