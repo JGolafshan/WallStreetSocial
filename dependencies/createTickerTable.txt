@@ -1,0 +1,27 @@
+CREATE TABLE public."Ticker"
+(
+    "TickerID" integer NOT NULL,
+    "CommentID_FK" integer,
+    "TickerFound" boolean,
+    "TickerSymbol" text COLLATE pg_catalog."default",
+    "TickerSentiment" double precision,
+    CONSTRAINT "Ticker_pkey" PRIMARY KEY ("TickerID"),
+    CONSTRAINT "CommentTableFK" FOREIGN KEY ("CommentID_FK")
+        REFERENCES public."Reddit" ("RedditID") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public."Ticker"
+    OWNER to postgres;
+-- Index: fki_CommentTableFK
+
+-- DROP INDEX public."fki_CommentTableFK";
+
+CREATE INDEX "fki_CommentTableFK"
+    ON public."Ticker" USING btree
+    ("CommentID_FK" ASC NULLS LAST)
+    TABLESPACE pg_default;
