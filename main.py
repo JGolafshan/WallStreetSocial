@@ -54,7 +54,8 @@ def comments_to_csv(comments_df):
     Saves down comments_df to a csv for loading into a data table
     """
     file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M") + '.csv'
-    return comments_df.to_csv(file_name, encoding='utf-8-sig', index=False)
+    comments_df.to_csv(file_name, encoding='utf-8-sig', index=False)
+    return file_name
 
 
 def find_tickers(comment):
