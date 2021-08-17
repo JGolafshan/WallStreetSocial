@@ -9,3 +9,5 @@ api_keys = [
 symbol = "TSLA"
 stock = Stock(symbol, token="pk_294d45992fbb4e8aa325cae768f6468b", output_format="json")
 
+
+this = "change"
