@@ -20,7 +20,7 @@ class Database:
         return self.cursor.execute(toSQL)
 
     def createMerged(self):
-        files = ["createDatabase.txt", "createRedditTable.txt", "createTickerTable.txt"]
+        files = ["createRedditTableSimplified.txt", "createTickerTable.txt"]
 
         for i in files:
             try:
@@ -40,4 +40,5 @@ class Database:
 
 
 db = Database()
+db.createFromExisting(file="createDatabase.txt")
 db.createMerged()
