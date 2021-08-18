@@ -51,7 +51,7 @@ class RedditPull:
         final_df = self.createFinalDataframe(comments_df)
         path = self.commentsToCsv(final_df)
         db = Database()
-        return db.redditDump(db.conn, db.cursor, path)
+        return db.redditDump(path)
 
 
 _before = int(dt.datetime(2021, 1, 2, 11, 59).timestamp())
