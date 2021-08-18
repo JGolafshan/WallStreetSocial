@@ -57,5 +57,8 @@ class RedditPull:
 _before = int(dt.datetime(2021, 1, 2, 12, 2).timestamp())
 _after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
 
+_before2 = int(dt.datetime(2021, 1, 2, 12, 4).timestamp())
+_after2 = int(dt.datetime(2021, 1, 2, 12, 3).timestamp())
+
 wsb = RedditPull('wallstreetbets', _before, _after)
 wsb.fullStack()
