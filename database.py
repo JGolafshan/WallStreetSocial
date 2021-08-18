@@ -19,6 +19,13 @@ class Database:
         toSQL = read_doc.read()
         return self.cursor.execute(toSQL)
 
+    def redditDump(self, conn, cur, path):
+        with open(path, 'r', encoding='utf-8-sig') as f:
+            next(f)
+            cur.copy_from(f, 'Reddit', sep=',')
+
+        conn.commit()
+
     def createMerged(self):
         files = ["createRedditTableSimplified.txt", "createTickerTable.txt"]
 
