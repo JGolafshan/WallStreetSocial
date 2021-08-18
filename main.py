@@ -5,7 +5,7 @@ import re
 from iexfinance.stocks import Stock
 from iexfinance.stocks import get_historical_data
 import os
-
+from pprint import pprint
 
 # input true for sandbox
 def sandbox(change):
@@ -21,14 +21,13 @@ def sandbox(change):
 
 sandbox(True)
 
-before = int(dt.datetime(2021, 1, 2, 0, 0).timestamp())
-after = int(dt.datetime(2021, 1, 1, 0, 0).timestamp())
+before = int(dt.datetime(2014, 1, 2, 0, 0).timestamp())
+after = int(dt.datetime(2014, 1, 1, 0, 0).timestamp())
 
 
 def get_reddit_comments(subreddit, before, after):
     """Returns a dataframe containing comments from a particular subreddit between
        given date frame defined by before and after.
-
        Before and after variables must be converted to epoch time before calling them as arguments.
     """
     api = PushshiftAPI()
@@ -39,13 +38,16 @@ def get_reddit_comments(subreddit, before, after):
 
 
 def clean_comments_dataframe(comments_df):
-    comments_df = comments_df.drop(
-        ['all_awardings', 'associated_award', 'author_flair_background_color', 'author_flair_css_class',
-         'author_flair_richtext',
-         'author_flair_template_id', 'author_flair_text', 'author_flair_text_color', 'author_flair_type',
-         'author_fullname', 'author_patreon_flair', 'author_premium', 'awarders', 'collapsed_because_crowd_control',
-         'comment_type', 'gildings', 'is_submitter', 'locked', 'no_follow', 'send_replies', 'top_awarded_type',
-         'treatment_tags', 'author_cakeday', 'distinguished'], axis=1)
+    try:
+        comments_df = comments_df.drop(
+            ['all_awardings', 'associated_award', 'author_flair_background_color', 'author_flair_css_class',
+             'author_flair_richtext',
+             'author_flair_template_id', 'author_flair_text', 'author_flair_text_color', 'author_flair_type',
+             'author_fullname', 'author_patreon_flair', 'author_premium', 'awarders', 'collapsed_because_crowd_control',
+             'comment_type', 'gildings', 'is_submitter', 'locked', 'no_follow', 'send_replies', 'top_awarded_type',
+             'treatment_tags', 'author_cakeday', 'distinguished'], axis=1)
+    except KeyError:
+        return comments_df
     return comments_df
 
 
@@ -73,7 +75,6 @@ def verify_tickers(tickers):
     """
     Verifies if a ticker is real by sending it to the IEX. If the API call doesn't error out, we assume it to be a real
     ticker and append it to a list of mentioned tickers. This function acts on a single comment.
-
     """
     mentioned_tickers = []
     for ticker in tickers:
@@ -98,3 +99,8 @@ def create_master_ticker_list(comments):
         for ticker in mentioned_tickers:
             verified_tickers.append(ticker)
     return verified_tickers
+
+
+x = get_reddit_comments("wallstreetbets", before=before, after=after)
+
+pprint(x)
