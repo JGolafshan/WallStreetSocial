@@ -1,0 +1,11 @@
+CREATE TABLE public."Reddit"
+                (
+                    "RedditID" integer,
+                    "RedditAuthor" text,
+                    "RedditText" text,
+                    "RedditPostDate" date,
+                    PRIMARY KEY ("RedditID")
+                );
+
+ALTER TABLE public."Reddit"
+    OWNER to postgres;
