@@ -43,7 +43,7 @@ class RedditPull:
         file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M")
 
         path = f"{dir_name}\{folder}\{file_name}.csv"
-        df.to_csv(path, encoding='utf-8-sig', index=True)
+        df.to_csv(path, encoding='utf-8-sig', index=False)
         return path
 
     def fullStack(self):
@@ -54,8 +54,8 @@ class RedditPull:
         return db.redditDump(path)
 
 
-_before = int(dt.datetime(2021, 1, 2, 11, 59).timestamp())
-_after = int(dt.datetime(2021, 1, 2, 11, 58).timestamp())
+_before = int(dt.datetime(2021, 1, 2, 12, 2).timestamp())
+_after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
 
 wsb = RedditPull('wallstreetbets', _before, _after)
 wsb.fullStack()
