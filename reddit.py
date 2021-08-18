@@ -7,8 +7,8 @@ from database import Database
 
 
 
-before = int(dt.datetime(2021, 1, 2, 12, 0).timestamp())
-after = int(dt.datetime(2021, 1, 2, 11, 59).timestamp())
+before = int(dt.datetime(2021, 1, 2, 11, 59).timestamp())
+after = int(dt.datetime(2021, 1, 2, 11, 58).timestamp())
 
 
 class RedditPull:
@@ -55,7 +55,7 @@ class RedditPull:
         file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M") + '.csv'
         folder = 'temp'
         path = f"{self.dir_name}\{folder}\{file_name}"
-        df.to_csv(path, encoding='utf-8-sig', index=False)
+        df.to_csv(path, encoding='utf-8-sig', index=True)
         return path
 
 
