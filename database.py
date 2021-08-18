@@ -42,8 +42,5 @@ class Database:
         return self.cursor.execute(query)
 
     def query(self):
-        """"""
-        pass
-
-
-
+       """"""
+       pass
