@@ -6,11 +6,6 @@ import os
 from database import Database
 
 
-
-before = int(dt.datetime(2021, 1, 2, 12, 0).timestamp())
-after = int(dt.datetime(2021, 1, 2, 11, 59).timestamp())
-
-
 class RedditPull:
     """
     This class will be used to pull reddit comments from a specific subreddit over a given time period.
@@ -20,20 +15,11 @@ class RedditPull:
     """
 
     def __init__(self, subreddit, before, after):
-        self.dir_name = os.path.dirname(os.path.abspath(__file__))
         self.before = before
         self.after = after
         self.subreddit = subreddit
-        self.comments_df = self.GetRedditComments()
-        self.final_df = self.CreateFinalDataframe(self.comments_df)
-        self.path = self.CommentsToCsv(self.final_df)
-        self.db = Database()
-        self.execute = self.db.redditDump(self.db.conn, self.db.cursor, self.path)
 
-
-
-
-    def GetRedditComments(self):
+    def getRedditComments(self):
         """Returns a dataframe containing comments from a particular subreddit between
               given date frame defined by before and after.
 
@@ -44,27 +30,32 @@ class RedditPull:
         comments_df = pd.DataFrame(comments)
         return comments_df
 
-    def CreateFinalDataframe(self, df):
-        clean_df = df[['id','created_utc','body']]
+    def createFinalDataframe(self, df):
+        clean_df = df[['id', 'created_utc', 'body']]
         clean_df['created_utc'] = pd.to_datetime(clean_df['created_utc'], unit='s')
-        clean_df = clean_df.replace(',','',regex=True)
-        clean_df = clean_df.replace('\n','',regex = True)
+        clean_df = clean_df.replace(',', '', regex=True)
+        clean_df = clean_df.replace('\n', '', regex=True)
         return clean_df
 
-    def CommentsToCsv(self, df):
-        file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M") + '.csv'
+    def commentsToCsv(self, df):
+        dir_name = os.path.dirname(os.path.abspath(__file__))
         folder = 'temp'
-        path = f"{self.dir_name}\{folder}\{file_name}"
-        df.to_csv(path, encoding='utf-8-sig', index=False)
+        file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M")
+
+        path = f"{dir_name}\{folder}\{file_name}.csv"
+        df.to_csv(path, encoding='utf-8-sig', index=True)
         return path
 
+    def fullStack(self):
+        comments_df = self.getRedditComments()
+        final_df = self.createFinalDataframe(comments_df)
+        path = self.commentsToCsv(final_df)
+        db = Database()
+        return db.redditDump(db.conn, db.cursor, path)
 
 
+_before = int(dt.datetime(2021, 1, 2, 11, 59).timestamp())
+_after = int(dt.datetime(2021, 1, 2, 11, 58).timestamp())
 
-
-
-
-
-
-wsb = RedditPull('wallstreetbets',before, after)
-
+wsb = RedditPull('wallstreetbets', _before, _after)
+wsb.fullStack()

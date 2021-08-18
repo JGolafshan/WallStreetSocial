@@ -1,10 +1,10 @@
 CREATE TABLE public."Reddit"
                 (
-                    "RedditID" integer,
+                    "CommentID" SERIAL,
                     "RedditAuthor" text,
-                    "RedditText" text,
                     "RedditPostDate" date,
-                    PRIMARY KEY ("RedditID")
+                    "RedditText" text,
+                    PRIMARY KEY ("CommentID")
                 );
 
 ALTER TABLE public."Reddit"
