@@ -14,15 +14,9 @@ class Database:
         folder = "dependencies"
         file = f"{dir_name}\{folder}\{file}"
         read_doc = open(file, "r")
-        toSQL = read_doc.read()
-        return self.cursor.execute(toSQL)
-
-    def redditDump(self, conn, cur, path):
-        with open(path, 'r', encoding='utf-8-sig') as f:
-            next(f)
-            cur.copy_from(f, 'Reddit', sep=',')
-
-        conn.commit()
+        to_sql = read_doc.read()
+        self.cursor.execute(to_sql)
+        self.conn.commit()
 
     def createMerged(self):
         files = ["createRedditTableSimplified.txt", "createTickerTable.txt"]
@@ -31,3 +25,10 @@ class Database:
                 self.createFromExisting(i)
             except psycopg2.Error:
                 pass
+
+    def redditDump(self, path):
+        with open(path, 'r', encoding='utf-8-sig') as f:
+            next(f)
+            self.cursor.copy_from(f, 'Reddit', sep=',')
+
+        self.conn.commit()
