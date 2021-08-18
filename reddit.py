@@ -1,12 +1,11 @@
+from pmaw import PushshiftAPI
+from database import Database
 import datetime as dt
 import pandas as pd
-from pmaw import PushshiftAPI
 import os
 
-from database import Database
 
-
-class RedditPull:
+class RedditPipe:
     """
     This class will be used to pull reddit comments from a specific subreddit over a given time period.
     It pulls from pushshift, arranges comments into a dataframe, removes unnecessary columns, saves it down
@@ -30,6 +29,7 @@ class RedditPull:
         comments_df = pd.DataFrame(comments)
         return comments_df
 
+    # noinspection PyMethodMayBeStatic
     def createFinalDataframe(self, df):
         clean_df = df[['id', 'created_utc', 'body']]
         clean_df['created_utc'] = pd.to_datetime(clean_df['created_utc'], unit='s')
@@ -37,6 +37,7 @@ class RedditPull:
         clean_df = clean_df.replace('\n', '', regex=True)
         return clean_df
 
+    # noinspection PyMethodMayBeStatic
     def commentsToCsv(self, df):
         dir_name = os.path.dirname(os.path.abspath(__file__))
         folder = 'temp'
@@ -60,5 +61,5 @@ _after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
 _before2 = int(dt.datetime(2021, 1, 2, 12, 4).timestamp())
 _after2 = int(dt.datetime(2021, 1, 2, 12, 3).timestamp())
 
-wsb = RedditPull('wallstreetbets', _before, _after)
+wsb = RedditPipe('wallstreetbets', _before, _after)
 wsb.fullStack()
