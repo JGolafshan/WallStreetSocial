@@ -1,13 +1,12 @@
 CREATE TABLE public."Ticker"
 (
-    "TickerID" integer NOT NULL,
+    "TickerID" SERIAL NOT NULL,
     "CommentID_FK" integer,
-    "TickerFound" boolean,
     "TickerSymbol" text COLLATE pg_catalog."default",
     "TickerSentiment" double precision,
     CONSTRAINT "Ticker_pkey" PRIMARY KEY ("TickerID"),
     CONSTRAINT "CommentTableFK" FOREIGN KEY ("CommentID_FK")
-        REFERENCES public."Reddit" ("RedditID") MATCH SIMPLE
+        REFERENCES public."Comment" ("CommentID") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID

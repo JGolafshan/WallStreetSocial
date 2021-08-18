@@ -1,11 +1,12 @@
-CREATE TABLE public."Reddit"
+CREATE TABLE public."Comment"
                 (
                     "CommentID" SERIAL,
-                    "RedditAuthor" text,
-                    "RedditPostDate" date,
-                    "RedditText" text,
+                    "CommentAuthor" text,
+                    "CommentPostDate" date,
+                    "CommentText" text,
+                    "CommenthasTicker" boolean,
                     PRIMARY KEY ("CommentID")
                 );
 
-ALTER TABLE public."Reddit"
+ALTER TABLE public."Comment"
     OWNER to postgres;

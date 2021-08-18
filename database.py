@@ -22,10 +22,7 @@ class Database:
     def createMerged(self):
         files = ["createRedditTableSimplified.txt", "createTickerTable.txt"]
         for i in files:
-            try:
-                self.createFromExisting(i)
-            except psycopg2.Error:
-                pass
+            self.createFromExisting(i)
 
 
     def redditDump(self, path):
@@ -34,7 +31,3 @@ class Database:
             self.cursor.copy_from(f, 'Reddit', sep=',', columns = ('RedditAuthor','RedditPostDate','RedditText'))
 
         self.conn.commit()
-
-
-db = Database()
-db.createMerged()

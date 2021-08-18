@@ -6,7 +6,7 @@ import os
 from database import Database
 
 
-class RedditPull:
+class RedditPipe:
     """
     This class will be used to pull reddit comments from a specific subreddit over a given time period.
     It pulls from pushshift, arranges comments into a dataframe, removes unnecessary columns, saves it down
@@ -22,7 +22,6 @@ class RedditPull:
     def getRedditComments(self):
         """Returns a dataframe containing comments from a particular subreddit between
               given date frame defined by before and after.
-
               Before and after variables must be converted to epoch time before calling them as arguments.
            """
         api = PushshiftAPI()
@@ -57,5 +56,5 @@ class RedditPull:
 _before = int(dt.datetime(2021, 1, 2, 12, 2).timestamp())
 _after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
 
-wsb = RedditPull('wallstreetbets', _before, _after)
+wsb = RedditPipe('wallstreetbets', _before, _after)
 wsb.fullStack()
