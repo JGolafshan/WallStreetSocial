@@ -47,7 +47,7 @@ class Database:
         pass
 
 
-db = Database()
 
 
-db.createMerged()
+
+
