@@ -3,6 +3,8 @@ import pandas as pd
 from pmaw import PushshiftAPI
 import os
 
+from database import Database
+
 
 
 before = int(dt.datetime(2021, 1, 2, 12, 0).timestamp())
@@ -24,7 +26,10 @@ class RedditPull:
         self.subreddit = subreddit
         self.comments_df = self.GetRedditComments()
         self.final_df = self.CreateFinalDataframe(self.comments_df)
-        self.file_path = self.CommentsToCsv(self.final_df)
+        self.path = self.CommentsToCsv(self.final_df)
+        self.db = Database()
+        self.execute = self.db.redditDump(self.db.conn, self.db.cursor, self.path)
+
 
 
 
@@ -52,6 +57,10 @@ class RedditPull:
         path = f"{self.dir_name}\{folder}\{file_name}"
         df.to_csv(path, encoding='utf-8-sig', index=False)
         return path
+
+
+
+
 
 
 

@@ -6,7 +6,7 @@ class Database:
     def __init__(self):
         self.conn = psycopg2.connect(
 
-            database="WallStreet-Social", user='postgres', password='123', host='127.0.0.1', port='5432'
+        database = 'WallStreet-Social',user='postgres', password='123', host='127.0.0.1', port='5432'
         )
         self.cursor = self.conn.cursor()
         self.conn.autocommit = True
@@ -28,6 +28,14 @@ class Database:
             except psycopg2.Error:
                 pass
 
+    def redditDump(self, conn, cur, path):
+        with open(path, 'r', encoding='utf-8-sig') as f:
+            next(f)
+            cur.copy_from(f, 'Reddit', sep=',')
+
+        conn.commit()
+
+
     def update(self, query):
         """"""
         query = """"INSERT INTO public."Comments"("CommentsID",  "CommentsText")
@@ -40,5 +48,6 @@ class Database:
 
 
 db = Database()
-db.createFromExisting(file="createDatabase.txt")
+
+
 db.createMerged()
