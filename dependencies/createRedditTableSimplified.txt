@@ -4,7 +4,7 @@ CREATE TABLE public."Comment"
                     "CommentAuthor" text,
                     "CommentPostDate" date,
                     "CommentText" text,
-                    "CommenthasTicker" boolean,
+                    "CommentHasTicker" boolean,
                     PRIMARY KEY ("CommentID")
                 );
 

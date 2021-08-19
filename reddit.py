@@ -55,7 +55,7 @@ class RedditPipe:
         return db.redditDump(path)
 
 
-_before = int(dt.datetime(2021, 1, 2, 12, 2).timestamp())
+_before = int(dt.datetime(2021, 1, 2, 12, 50).timestamp())
 _after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
 
 wsb = RedditPipe('wallstreetbets', _before, _after)

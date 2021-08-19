@@ -1,3 +1,5 @@
+import pprint
+
 import psycopg2
 import os
 
@@ -26,6 +28,4 @@ class Database:
     def redditDump(self, path):
         with open(path, 'r', encoding='utf-8-sig') as f:
             next(f)
-            self.cursor.copy_from(f, 'Reddit', sep=',', columns=('RedditAuthor', 'RedditPostDate', 'RedditText'))
-
-        self.conn.commit()
+            self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
