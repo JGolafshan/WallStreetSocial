@@ -47,7 +47,7 @@ class RedditPipe:
         df.to_csv(path, encoding='utf-8-sig', index=False)
         return path
 
-    def fullStack(self):
+    def redditStack(self):
         comments_df = self.getRedditComments()
         final_df = self.createFinalDataframe(comments_df)
         path = self.commentsToCsv(final_df)
@@ -58,8 +58,5 @@ class RedditPipe:
 _before = int(dt.datetime(2021, 1, 2, 12, 2).timestamp())
 _after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
 
-_before2 = int(dt.datetime(2021, 1, 2, 12, 4).timestamp())
-_after2 = int(dt.datetime(2021, 1, 2, 12, 3).timestamp())
-
 wsb = RedditPipe('wallstreetbets', _before, _after)
-wsb.fullStack()
+wsb.redditStack()

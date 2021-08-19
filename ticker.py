@@ -1,4 +1,5 @@
 from iexfinance.stocks import get_historical_data
+from database import Database as db
 from iexfinance.stocks import Stock
 from pprint import pprint
 import datetime as dt
@@ -19,6 +20,7 @@ class TickerPipe:
         This function acts on a single comment.
         """
         tickers = re.findall(r'\$[a-zA-Z]+\b', str(comment))
+        print(tickers)
         return tickers
 
     def verify_tickers(self, tickers):
@@ -30,11 +32,14 @@ class TickerPipe:
         mentioned_tickers = []
         for ticker in tickers:
             try:
-                price = Stock(ticker[1:]).get_company()
-                mentioned_tickers.append(ticker[1:])
-            except Exception as e:
-                pass
+                ticker = str(ticker).replace("$", "")
+                found = Stock(ticker, token="pk_294d45992fbb4e8aa325cae768f6468b",
+                              output_format="json").get_company_name()
+                mentioned_tickers.append(ticker)
 
+            except TypeError as e:
+                # ignore the stock name
+                continue
         return mentioned_tickers
 
     def create_master_ticker_list(self, comments):
@@ -49,3 +54,11 @@ class TickerPipe:
             for ticker in mentioned_tickers:
                 verified_tickers.append(ticker)
         return verified_tickers
+
+    def tickerStack(self):
+        comment = self.find_tickers(comment="$TSLA $APPL $PAYP")
+        self.verify_tickers(comment)
+
+
+test = TickerPipe()
+test.tickerStack()
