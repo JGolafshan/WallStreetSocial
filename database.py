@@ -2,7 +2,7 @@ import pprint
 
 import psycopg2
 import os
-
+import pandas.io.sql as sqlio
 
 class Database:
     def __init__(self):
@@ -29,3 +29,16 @@ class Database:
         with open(path, 'r', encoding='utf-8-sig') as f:
             next(f)
             self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
+
+    def loadCommentBatch(self, before, after):
+        """
+        Function loads a batch of data from Reddit table for processing. Returns pandas dataframe representing the
+        comment data between the specified dates. Dates are input in string format, i.e. '2021-01-01'
+        """
+        sql = """
+        select * 
+        from public."Reddit"
+        where "RedditPostDate" between %(after)s and %(before)s
+        """
+        query_params = {'before': before, 'after': after}
+        return sqlio.read_sql_query(sql, self.conn, params = query_params)

@@ -5,11 +5,12 @@ from pprint import pprint
 import datetime as dt
 import pandas as pd
 import re
-
+from database import Database
 
 class TickerPipe:
-    def __init__(self):
-        pass
+    def __init__(self, before, after):
+        self.before = before
+        self.after = after
 
     def find_tickers(self, comment):
         """
@@ -62,3 +63,4 @@ class TickerPipe:
 
 test = TickerPipe()
 test.tickerStack()
+
