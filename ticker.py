@@ -8,7 +8,7 @@ import re
 from database import Database
 
 class TickerPipe:
-    def __init__(self, before, after):
+    def __init__(self, before, after): #I put before and after in here because in the fullStack method we'll call the database class load function and use self.before,self.after
         self.before = before
         self.after = after
 
