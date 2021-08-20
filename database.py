@@ -28,7 +28,7 @@ class Database:
     def redditDump(self, path):
         with open(path, 'r', encoding='utf-8-sig') as f:
             next(f)
-            self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
+            self.cursor.copy_from(f, 'Reddit', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
 
     def loadCommentBatch(self, before, after):
         """
