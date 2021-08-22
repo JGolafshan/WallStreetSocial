@@ -6,11 +6,13 @@ import datetime as dt
 import pandas as pd
 import re
 from database import Database
+import spacy
 
 class TickerPipe:
     def __init__(self, before, after): #I put before and after in here because in the fullStack method we'll call the database class load function and use self.before,self.after
         self.before = before
         self.after = after
+        self.nlp = spacy.load['en_core_web_sm']
 
     def find_tickers(self, comment):
         """
@@ -42,6 +44,28 @@ class TickerPipe:
                 # ignore the stock name
                 continue
         return mentioned_tickers
+    
+    def get_orgs(self, comment):
+        """
+        Use this on a dataframe using .apply.  
+        df['orgs'] = df['CommentText'].apply(get_orgs) 
+        assigns a column with orgs as a list to the dataframe you load using the db connection
+        """
+        
+        doc = self.nlp(text)
+        org_list = []
+            for entity in doc.ents:
+                # here we modify the original code to check that entity text is not equal to one of our 'blacklisted' organizations
+                # (we also add .lower() to lowercase the text, this allows us to match both 'nyse' and 'NYSE' with just 'nyse')
+                if entity.label_ == 'ORG' and entity.text.lower() not in BLACKLIST:
+                    org_list.append(entity.text)
+        # if organization is identified more than once it will appear multiple times in list
+        # we use set() to remove duplicates then convert back to list
+        org_list = list(set(org_list))
+        return org_list
+        
+
+        
 
     def create_master_ticker_list(self, comments):
         """
@@ -60,6 +84,8 @@ class TickerPipe:
         comment = self.find_tickers(comment="$TSLA $APPL $PAYP")
         self.verify_tickers(comment)
 
+        
+ 
 
 test = TickerPipe()
 test.tickerStack()
