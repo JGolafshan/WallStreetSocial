@@ -34,6 +34,7 @@ class Database:
         with open(path, 'r', encoding='utf-8-sig') as f:
             next(f)
             self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
+            self.conn.commit()
 
     def loadCommentBatch(self, before, after):
         """
