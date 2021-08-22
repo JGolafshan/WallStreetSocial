@@ -5,7 +5,7 @@
 /.idea/
 /.github/
 /dist/
-
+*.csv
 *.gz
 *.txt
 *.pyc

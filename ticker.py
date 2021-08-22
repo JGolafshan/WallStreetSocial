@@ -63,4 +63,3 @@ class TickerPipe:
 
 test = TickerPipe()
 test.tickerStack()
-

@@ -21,7 +21,6 @@ class RedditPipe:
     def getRedditComments(self):
         """Returns a dataframe containing comments from a particular subreddit between
               given date frame defined by before and after.
-
               Before and after variables must be converted to epoch time before calling them as arguments.
            """
         api = PushshiftAPI()
@@ -31,6 +30,7 @@ class RedditPipe:
 
     # noinspection PyMethodMayBeStatic
     def createFinalDataframe(self, df):
+        """"""
         clean_df = df[['id', 'created_utc', 'body']]
         clean_df['created_utc'] = pd.to_datetime(clean_df['created_utc'], unit='s')
         clean_df = clean_df.replace(',', '', regex=True)
@@ -39,6 +39,7 @@ class RedditPipe:
 
     # noinspection PyMethodMayBeStatic
     def commentsToCsv(self, df):
+        """"""
         dir_name = os.path.dirname(os.path.abspath(__file__))
         folder = 'temp'
         file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M")
@@ -48,6 +49,7 @@ class RedditPipe:
         return path
 
     def redditStack(self):
+        """"""
         comments_df = self.getRedditComments()
         final_df = self.createFinalDataframe(comments_df)
         path = self.commentsToCsv(final_df)

@@ -1,4 +1,5 @@
 import pandas as pd
+from iexfinance.stocks import Stock
 import plotly.graph_objects as go
 import dash
 import dash_core_components as dcc

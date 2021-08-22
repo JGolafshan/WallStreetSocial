@@ -4,7 +4,10 @@ import psycopg2
 import os
 import pandas.io.sql as sqlio
 
+
 class Database:
+    """"""
+
     def __init__(self):
         self.conn = psycopg2.connect(
             database="WallStreet-Social", user='postgres', password='123', host='127.0.0.1', port='5432')
@@ -21,14 +24,16 @@ class Database:
         self.conn.commit()
 
     def createMerged(self):
+        """"""
         files = ["createRedditTableSimplified.txt", "createTickerTable.txt"]
         for i in files:
             self.createFromExisting(i)
 
     def redditDump(self, path):
+        """"""
         with open(path, 'r', encoding='utf-8-sig') as f:
             next(f)
-            self.cursor.copy_from(f, 'Reddit', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
+            self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
 
     def loadCommentBatch(self, before, after):
         """
@@ -41,4 +46,4 @@ class Database:
         where "RedditPostDate" between %(after)s and %(before)s
         """
         query_params = {'before': before, 'after': after}
-        return sqlio.read_sql_query(sql, self.conn, params = query_params)
+        return sqlio.read_sql_query(sql, self.conn, params=query_params)
