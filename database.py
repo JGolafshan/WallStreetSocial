@@ -1,5 +1,3 @@
-import pprint
-
 import psycopg2
 import os
 import pandas.io.sql as sqlio
@@ -43,8 +41,7 @@ class Database:
         """
         sql = """
         select * 
-        from public."Reddit"
-        where "RedditPostDate" between %(after)s and %(before)s
+        from public."Comment"
         """
         query_params = {'before': before, 'after': after}
-        return sqlio.read_sql_query(sql, self.conn, params=query_params)
+        return sqlio.read_sql_query(sql, self.conn)
