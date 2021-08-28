@@ -9,13 +9,12 @@ loadData = db.loadCommentBatch(0, 0)
 
 for index, row in loadData.iterrows():
     check_for_tickler = ticker.find_tickers(row[3])
-    if len(check_for_tickler):
+    if len(check_for_tickler) >= 1:
+
         db.cursor.execute(
             f"""
-            INSERT INTO public."Ticker"
-            (CommentID_FK, TickerSymbol, TickerSentiment)
-            VALUES
-            ({row[0]},{str(check_for_tickler[0]).replace("$","")},{0.0})
+            INSERT INTO public."Ticker" ("CommentID_FK", "TickerSymbol", "TickerSentiment")
+            VALUES ({row[0]}, {str(check_for_tickler[0]).replace("$","")}, {0.0})
             """
         )
-print(loadData)
+        db.conn.commit()
