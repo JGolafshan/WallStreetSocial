@@ -4,6 +4,7 @@ import iexfinance.utils.exceptions
 from iexfinance.stocks import Stock
 
 
+
 class TickerPipe:
     def __init__(self):
         pass
