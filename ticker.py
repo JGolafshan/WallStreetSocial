@@ -1,13 +1,8 @@
-import iexfinance.utils.exceptions
-from iexfinance.stocks import get_historical_data
-from database import Database as db
-from iexfinance.stocks import Stock
-from pprint import pprint
-import datetime as dt
-import pandas as pd
 import re
-from database import Database
 import spacy
+import iexfinance.utils.exceptions
+from iexfinance.stocks import Stock
+
 
 
 class TickerPipe:

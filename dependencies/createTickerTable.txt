@@ -1,6 +1,6 @@
 CREATE TABLE public."Ticker"
 (
-    "TickerID" SERIAL NOT NULL,
+    "TickerID" SERIAL,
     "CommentID_FK" integer,
     "TickerSymbol" text COLLATE pg_catalog."default",
     "TickerSentiment" double precision,
