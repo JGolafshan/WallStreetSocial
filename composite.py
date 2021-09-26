@@ -1,20 +1,22 @@
 from database import Database
-from ticker import TickerPipe
 import datetime as dt
+import spacy
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 db = Database()
-ticker = TickerPipe()
-
 loadData = db.loadCommentBatch(0, 0)
+wsb = spacy.load("E:/WallStreetSocial/models/wsb_ner")
+sia = SentimentIntensityAnalyzer()
 
+# Add to Ticker DB
 for index, row in loadData.iterrows():
-    check_for_tickler = ticker.find_tickers(row[3])
-    if len(check_for_tickler) >= 1:
-
+    text = row[3]
+    doc = wsb(text)
+    for en in doc.ents:
         db.cursor.execute(
             f"""
             INSERT INTO public."Ticker" ("CommentID_FK", "TickerSymbol", "TickerSentiment")
-            VALUES ({row[0]}, {str(check_for_tickler[0]).replace("$","")}, {0.0})
+            VALUES ({row[0]}, {"'" + str(en).replace("$", "") + "'"}, {sia.polarity_scores(text)['compound']})
             """
         )
         db.conn.commit()

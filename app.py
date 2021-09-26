@@ -34,10 +34,7 @@ api_keys = [
 symbol = "TSLA"
 stock = Stock(symbol, token="pk_294d45992fbb4e8aa325cae768f6468b", output_format="json")
 
-
 this = "change"
-
-
 
 ticker_info = ticker.info
 pprint(ticker_info)
@@ -70,7 +67,8 @@ app.layout = html.Div(
                     html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
                         html.Dt(["Last Price / Today's Change"]),
                         html.Tr([
-                            html.Th([html.Dd(className="price", children=["$"+str(round(ticker_info.get('regularMarketPrice'), 2))])]),
+                            html.Th([html.Dd(className="price",
+                                             children=["$" + str(round(ticker_info.get('regularMarketPrice'), 2))])]),
                             html.Th([html.Dd(className="price_info", children=[change])]),
                             html.Th([html.Dd(className="price_info", children=[f"({change_percentage})%"])]),
                         ]),
@@ -89,12 +87,12 @@ app.layout = html.Div(
                 html.Div(className="row standard", children=[
                     html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
                         html.Dt([f"{ticker_info.get('sector')}: {ticker_info.get('industry')}"]),
-                        ]),
                     ]),
-
                 ]),
 
             ]),
+
+        ]),
         # Stock Graph
         html.Div(
             className="graph container-md",
