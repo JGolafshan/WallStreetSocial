@@ -7,8 +7,8 @@ Is an
 * [About the ML Model](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#about-the-ml-model)
 * [Python Code Example](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#python-code-example)
 * 
-# Features and Updates
-# Introduction
-# Resources and Dataset Descriptions
-# About the ML Model
-# Python Code Example
+## Features and Updates
+## Introduction
+## Resources and Dataset Descriptions
+## About the ML Model
+## Python Code Example
