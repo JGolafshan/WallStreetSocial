@@ -2,7 +2,7 @@ CREATE TABLE public."Comment"
                 (
                     "CommentID" SERIAL,
                     "CommentAuthor" text,
-                    "CommentPostDate" date,
+                    "CommentPostDate" timestamp without time zone,
                     "CommentText" text,
                     "CommentHasTicker" boolean,
                     PRIMARY KEY ("CommentID")

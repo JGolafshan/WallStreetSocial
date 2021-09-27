@@ -45,3 +45,5 @@ class Database:
         """
         query_params = {'before': before, 'after': after}
         return sqlio.read_sql_query(sql, self.conn)
+
+

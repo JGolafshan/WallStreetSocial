@@ -3,6 +3,7 @@ from database import Database
 import datetime as dt
 import pandas as pd
 import os
+import psycopg2
 
 
 class RedditPipe:
@@ -55,10 +56,3 @@ class RedditPipe:
         path = self.commentsToCsv(final_df)
         db = Database()
         return db.redditDump(path)
-
-
-_before = int(dt.datetime(2021, 1, 2, 12, 50).timestamp())
-_after = int(dt.datetime(2021, 1, 2, 12, 1).timestamp())
-
-wsb = RedditPipe('wallstreetbets', _before, _after)
-wsb.redditStack()
