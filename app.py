@@ -1,45 +1,10 @@
-import pandas as pd
-from iexfinance.stocks import Stock
 import plotly.graph_objects as go
 import dash
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-import yfinance as yf
-from pprint import pprint
-import math
+from assets import plotly_app_functions as func
 
-
-def millify(n):
-    millnames = ['', ' K', ' M', ' B', ' T']
-    n = float(n)
-    if n == 0:
-        return 0
-    else:
-        millidx = max(0, min(len(millnames) - 1, int(math.floor(0 if n == 0 else math.log10(abs(n)) / 3))))
-        return '{:.0f}{}'.format(n / 10 ** (3 * millidx), millnames[millidx])
-
-
-symbol = "AAPL"
-ticker = yf.ticker.Ticker(ticker=symbol)
-
-from iexfinance import account
-
-api_keys = [
-    "pk_294d45992fbb4e8aa325cae768f6468b",
-    "pk_f74c2c3a28b04fb6b756bb029766860b"
-]
-
-# select stock ticker and create AV objects
-symbol = "TSLA"
-stock = Stock(symbol, token="pk_294d45992fbb4e8aa325cae768f6468b", output_format="json")
-
-this = "change"
-
-ticker_info = ticker.info
-pprint(ticker_info)
-change = round(ticker_info.get('regularMarketPrice') - ticker_info.get('regularMarketPreviousClose'), 3)
-change_percentage = round((change / ticker_info.get('regularMarketPreviousClose')) * 100, 2)
 # Dash app instantiation
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css",
                         dbc.themes.GRID,
@@ -57,8 +22,8 @@ app.layout = html.Div(
             html.Div(className="container container-md", children=[
                 dbc.Row([
                     html.Tr([
-                        html.Th([html.H1(ticker_info.get('shortName'))]),
-                        html.Th([html.H2(ticker_info.get('symbol'))]),
+                        html.Th([html.H1(func.ticker_info.get('shortName'))]),
+                        html.Th([html.H2(func.ticker_info.get('symbol'))]),
                     ]),
 
                 ], align="baseline", className="remove-distance", ),
@@ -68,25 +33,25 @@ app.layout = html.Div(
                         html.Dt(["Last Price / Today's Change"]),
                         html.Tr([
                             html.Th([html.Dd(className="price",
-                                             children=["$" + str(round(ticker_info.get('regularMarketPrice'), 2))])]),
-                            html.Th([html.Dd(className="price_info", children=[change])]),
-                            html.Th([html.Dd(className="price_info", children=[f"({change_percentage})%"])]),
+                                             children=["$" + str(round(func.ticker_info.get('regularMarketPrice'), 2))])]),
+                            html.Th([html.Dd(className="price_info", children=[func.change])]),
+                            html.Th([html.Dd(className="price_info", children=[f"({func.change_percentage})%"])]),
                         ]),
                     ]),
 
                     html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
                         html.Dt(["VOLUME"]),
-                        html.Dd(className="price_info", children=[f"{millify(ticker_info.get('regularMarketVolume'))}"])
+                        html.Dd(className="price_info", children=[f"{func.millify(func.ticker_info.get('regularMarketVolume'))}"])
                     ]),
 
                     html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
                         html.Dt(["MARKET CAPITALISATION"]),
-                        html.Dd(className="price_info", children=[f"{millify(ticker_info.get('marketCap'))}"])
+                        html.Dd(className="price_info", children=[f"{func.millify(func.ticker_info.get('marketCap'))}"])
                     ])
                 ]),
                 html.Div(className="row standard", children=[
                     html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
-                        html.Dt([f"{ticker_info.get('sector')}: {ticker_info.get('industry')}"]),
+                        html.Dt([f"{func.ticker_info.get('sector')}: {func.ticker_info.get('industry')}"]),
                     ]),
                 ]),
 
