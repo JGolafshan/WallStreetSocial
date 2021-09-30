@@ -2,6 +2,7 @@ from database import Database
 import datetime as dt
 import spacy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from model_utils.preprocess import preprocess
 
 db = Database()
 loadData = db.loadCommentBatch(0, 0)
@@ -11,7 +12,7 @@ sia = SentimentIntensityAnalyzer()
 # Add to Ticker DB
 for index, row in loadData.iterrows():
     text = row[3]
-    doc = wsb(text)
+    doc = wsb(preprocess(text))
     for en in doc.ents:
         if (len(doc.ents) >= 1 and row[4] == None):
             db.cursor.execute(
