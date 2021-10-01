@@ -3,7 +3,7 @@ Is an open source piece of software that is designed to allow anyone to quickly 
 
 * [Features and Updates](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#features-and-updates)
 * [Introduction](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#features-and-updates)
-* [Directory Explained](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#python-code-example)
+* [Directory Explained](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#directory-explained)
 * [Resources and Dataset Descriptions](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#resources-and-dataset-descriptions)
 * [About the ML Model](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#about-the-ml-model)
 * [Python Code Example](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#python-code-example)
