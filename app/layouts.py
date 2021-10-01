@@ -56,12 +56,12 @@ search_bar = dbc.Row(
 
 navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("About Us", href="/time-series")),
-        dbc.NavItem(dbc.NavLink("Rankings", href="/time-series")),
+        dbc.NavItem(dbc.NavLink("About Us", href="/about-us")),
+        dbc.NavItem(dbc.NavLink("Rankings", href="/ranks")),
         dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
         dbc.Collapse(search_bar, id="navbar-collapse", navbar=True, is_open=False),
     ],
     brand="Wall Street Social",
-    brand_href="/home",
+    brand_href="/",
     sticky="top",
 )
