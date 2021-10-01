@@ -1,10 +1,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-
 from app import app
-from layouts import layout1, layout2, errorMessage
-import callbacks
+from layouts import layout1, layout2, errorMessage, navbar
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -16,13 +14,24 @@ app.layout = html.Div([
               Input('url', 'pathname'))
 def display_page(pathname):
     if pathname == '/':
-        return "working"
+        app.title = "WallStreet Social ● Home"
+        layout = [
+            navbar
+        ]
+        return layout
     elif pathname == '/apps/app1':
+        app.title = "WallStreet Social ● About"
         return layout1
     elif pathname == '/apps/app2':
+        app.title = "WallStreet Social ● Stock Rankings"
         return layout2
     else:
-        return errorMessage
+        app.title = "Page Not Found ● WSS "
+        layout = [
+            navbar,
+            errorMessage
+        ]
+        return layout
 
 
 if __name__ == '__main__':

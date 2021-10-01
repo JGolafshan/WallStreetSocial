@@ -33,8 +33,35 @@ layout2 = html.Div([
 errorMessage = html.Div(
     className="errorDisplay",
     children=[
-            html.H1("Oops!"),
-            html.H3("Something went wrong"),
-            html.H5("Sorry, an error occurred with our website"),
-            html.P(dbc.Button("Go Back", color="dark", href="/"), className="mr-1"),
+        html.H1("Oops!"),
+        html.H3("Something went wrong"),
+        html.H5("Sorry, an error occurred with our website"),
+        html.P(dbc.Button("Go Back", color="dark", href="/"), className="mr-1"),
     ])
+
+search_bar = dbc.Row(
+    [
+        dbc.Col(dbc.Input(type="search", placeholder="Search")),
+        dbc.Col(
+            dbc.Button(
+                "Search", color="primary", className="ml-2", n_clicks=0
+            ),
+            width="auto",
+        ),
+    ],
+    no_gutters=True,
+    className="ml-auto flex-nowrap mt-3 mt-md-0",
+    align="center",
+)
+
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(dbc.NavLink("About Us", href="/time-series")),
+        dbc.NavItem(dbc.NavLink("Rankings", href="/time-series")),
+        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+        dbc.Collapse(search_bar, id="navbar-collapse", navbar=True, is_open=False),
+    ],
+    brand="Wall Street Social",
+    brand_href="/home",
+    sticky="top",
+)
