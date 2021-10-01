@@ -32,6 +32,5 @@ stock = Stock(symbol, token="pk_294d45992fbb4e8aa325cae768f6468b", output_format
 this = "change"
 
 ticker_info = ticker.info
-pprint(ticker_info)
 change = round(ticker_info.get('regularMarketPrice') - ticker_info.get('regularMarketPreviousClose'), 3)
 change_percentage = round((change / ticker_info.get('regularMarketPreviousClose')) * 100, 2)
