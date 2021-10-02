@@ -1,6 +1,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
+from assets import plotly_app_functions as func
 
 layout1 = html.Div([
     html.H3('App 1'),
@@ -65,3 +67,59 @@ navbar = dbc.NavbarSimple(
     brand_href="/",
     sticky="top",
 )
+
+
+def stockLayout(symbol):
+    stock = func.tickerResults(symbol)
+    return html.Div(
+        className="",
+        children=[
+            # Stock Info
+            html.Div(className="company-header", children=[
+                html.Div(className="container container-md", children=[
+                    dbc.Row([
+                        html.Tr([
+                            html.Th([html.H1(stock[2].get('shortName'))]),
+                            html.Th([html.H2(stock[2].get('symbol'))]),
+                        ]),
+
+                    ], align="baseline", className="remove-distance", ),
+
+                    html.Div(className="row standard", children=[
+                        html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
+                            html.Dt(["Last Price / Today's Change"]),
+                            html.Tr([
+                                html.Th([html.Dd(className="price",children=["$" + str(round(stock[2].get('regularMarketPrice'), 2))])]),
+                                html.Th([html.Dd(className="price_info", children=[stock[0]])]),
+                                html.Th([html.Dd(className="price_info", children=[f"({stock[1]})%"])]),
+                            ]),
+                        ]),
+
+                        html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
+                            html.Dt(["VOLUME"]),
+                            html.Dd(className="price_info",
+                                    children=[f"{func.millify(stock[2].get('regularMarketVolume'))}"])
+                        ]),
+
+                        html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
+                            html.Dt(["MARKET CAPITALISATION"]),
+                            html.Dd(className="price_info", children=[f"{func.millify(stock[2].get('marketCap'))}"])
+                        ])
+                    ]),
+                    html.Div(className="row standard", children=[
+                        html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
+                            html.Dt([f"{stock[2].get('sector')}: {stock[2].get('industry')}"]),
+                        ]),
+                    ]),
+
+                ]),
+            ]),
+            # Stock Graph
+            html.Div(
+                className="graph container-md",
+                children=[
+                    dcc.Graph(
+                        id="basic",
+                        figure=go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
+                    )]),
+        ])
