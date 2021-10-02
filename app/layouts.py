@@ -57,7 +57,7 @@ search_bar = dbc.Row(
 navbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(dbc.NavLink("About Us", href="/about-us")),
-        dbc.NavItem(dbc.NavLink("Rankings", href="/ranks")),
+        dbc.NavItem(dbc.NavLink("Rankings", href="/rankings")),
         dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
         dbc.Collapse(search_bar, id="navbar-collapse", navbar=True, is_open=False),
     ],

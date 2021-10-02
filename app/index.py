@@ -15,22 +15,22 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/':
         app.title = "WallStreet Social ● Home"
-        layout = [
-            navbar
-        ]
+        layout = [navbar]
+
         return layout
-    elif pathname == '/apps/app1':
+    elif pathname == '/about-us':
+
         app.title = "WallStreet Social ● About"
         return layout1
-    elif pathname == '/apps/app2':
+
+    elif pathname == '/rankings':
         app.title = "WallStreet Social ● Stock Rankings"
         return layout2
+
     else:
         app.title = "Page Not Found ● WSS "
         layout = [
-            navbar,
-            errorMessage
-        ]
+            navbar, errorMessage]
         return layout
 
 
