@@ -4,43 +4,6 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from assets import plotly_app_functions as func
 
-layout1 = html.Div([
-    html.H3('App 1'),
-    dcc.Dropdown(
-        id='app-1-dropdown',
-        options=[
-            {'label': 'App 1 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    html.Div(id='app-1-display-value'),
-    dcc.Link('Go to App 2', href='/apps/app2')
-])
-
-layout2 = html.Div([
-    html.H3('App 2'),
-    dcc.Dropdown(
-        id='app-2-dropdown',
-        options=[
-            {'label': 'App 2 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    html.Div(id='app-2-display-value'),
-    dcc.Link('Go to App 1', href='/apps/app1')
-])
-
-errorMessage = html.Div(
-    className="errorDisplay",
-    children=[
-        html.H1("Oops!"),
-        html.H3("Something went wrong"),
-        html.H5("Sorry, an error occurred with our website"),
-        html.P(dbc.Button("Go Back", color="dark", href="/"), className="mr-1"),
-    ])
-
 search_bar = dbc.Row(
     [
         dbc.Col(dbc.Input(type="search", placeholder="Search")),
@@ -69,7 +32,26 @@ navbar = dbc.NavbarSimple(
 )
 
 
-def stockLayout(symbol):
+def Error(errorType, symbol):
+    errorDesc = ""
+    if errorType == "stock":
+        errorDesc = "Sorry, we cant find "+symbol
+
+    if errorType == "url":
+        errorDesc = "Sorry, an error occurred with our website"
+
+    errorMessage = html.Div(
+        className="errorDisplay",
+        children=[
+            html.H1("Oops!"),
+            html.H3("Something went wrong"),
+            html.H5(errorDesc),
+            html.P(dbc.Button("Go Back", color="dark", href="/"), className="mr-1"),
+        ])
+    return errorMessage
+
+
+def Stock(symbol):
     stock = func.tickerResults(symbol)
     return html.Div(
         className="",
@@ -89,7 +71,8 @@ def stockLayout(symbol):
                         html.Dl(className="dl dl-lg col-md-3 col-sm-5 ", children=[
                             html.Dt(["Last Price / Today's Change"]),
                             html.Tr([
-                                html.Th([html.Dd(className="price",children=["$" + str(round(stock[2].get('regularMarketPrice'), 2))])]),
+                                html.Th([html.Dd(className="price",
+                                                 children=["$" + str(round(stock[2].get('regularMarketPrice'), 2))])]),
                                 html.Th([html.Dd(className="price_info", children=[stock[0]])]),
                                 html.Th([html.Dd(className="price_info", children=[f"({stock[1]})%"])]),
                             ]),
