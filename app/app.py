@@ -7,5 +7,4 @@ external_stylesheets = [dbc.themes.GRID,
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
                 title="WallStreet Social", suppress_callback_exceptions=True)
 
-
 server = app.server

@@ -8,6 +8,25 @@
     padding-bottom: 2.6rem;
 }
 
+.test{
+    background: url(chart_manager_bg_medium.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    height:100%;
+    position: absolute;
+
+}
+
+.jumbotron{
+    position: absolute;
+    text-align: center;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .errorDisplay.H1{
     font-size: 3rem;
 }

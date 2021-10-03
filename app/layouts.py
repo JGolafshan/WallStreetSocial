@@ -7,12 +7,7 @@ from assets import plotly_app_functions as func
 search_bar = dbc.Row(
     [
         dbc.Col(dbc.Input(type="search", placeholder="Search")),
-        dbc.Col(
-            dbc.Button(
-                "Search", color="primary", className="ml-2", n_clicks=0
-            ),
-            width="auto",
-        ),
+        dbc.Col(dbc.Button("Search", color="primary", className="ml-2", n_clicks=0), width="auto", ),
     ],
     no_gutters=True,
     className="ml-auto flex-nowrap mt-3 mt-md-0",
@@ -29,13 +24,18 @@ navbar = dbc.NavbarSimple(
     brand="Wall Street Social",
     brand_href="/",
     sticky="top",
+
 )
+
+
+def Loading():
+    pass
 
 
 def Error(errorType, symbol):
     errorDesc = ""
     if errorType == "stock":
-        errorDesc = "Sorry, we cant find "+symbol
+        errorDesc = "Sorry, we cant find " + symbol
 
     if errorType == "url":
         errorDesc = "Sorry, an error occurred with our website"
@@ -53,6 +53,7 @@ def Error(errorType, symbol):
 
 def Stock(symbol):
     stock = func.tickerResults(symbol)
+
     return html.Div(
         className="",
         children=[
@@ -106,3 +107,14 @@ def Stock(symbol):
                         figure=go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
                     )]),
         ])
+
+
+def LandingPage():
+    return html.Div(className="container-fluid test", children=[
+        dbc.Jumbotron([
+            html.H1("Jumbotron", className="display-3"),
+            html.P("Use a jumbotron to call attention to featured content or information.", className="lead", ),
+            html.P("Jumbotrons use utility classes for typography and spacing to suit the larger container."),
+            html.P(dbc.Button("Learn more", color="primary"), className="lead"),
+        ])
+    ])

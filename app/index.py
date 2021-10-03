@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from app import app
-from layouts import Error, navbar, Stock
+from layouts import Error, navbar, Stock, LandingPage, Loading
 from assets import plotly_app_functions as funcs
 
 app.layout = html.Div([
@@ -16,7 +16,7 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/':
         app.title = "WallStreet Social ● Home"
-        layout = [navbar]
+        layout = [navbar, LandingPage()]
         return layout
 
     elif "/stock/" in pathname:
@@ -41,8 +41,7 @@ def display_page(pathname):
 
     else:
         app.title = "Page Not Found ● WSS "
-        layout = [
-            navbar, Error("url", None)]
+        layout = [navbar, Error("url", None)]
         return layout
 
 
