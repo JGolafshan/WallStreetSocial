@@ -3,16 +3,28 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from assets import plotly_app_functions as func
+from dash.dependencies import Input, Output, State
+from app import app
 
 search_bar = dbc.Row(
     [
-        dbc.Col(dbc.Input(type="search", placeholder="Search")),
-        dbc.Col(dbc.Button("Search", color="primary", className="ml-2", n_clicks=0), width="auto", ),
+        dbc.Col(dbc.Input(id='input-on-submit', type="text", placeholder="Search")),
+        dbc.Col(dbc.Button("Search", id="submit-val", color="primary", className="ml-2", n_clicks=0), width="auto", ),
     ],
     no_gutters=True,
     className="ml-auto flex-nowrap mt-3 mt-md-0",
     align="center",
 )
+
+
+@app.callback(
+    Output('url', 'pathname'),
+    [Input('submit-val', 'n_clicks')],
+    [State('input-on-submit', 'value')])
+def update_output(n_clicks, value):
+    if (value != None):
+        return "/stock/" + value
+
 
 navbar = dbc.NavbarSimple(
     children=[
@@ -26,10 +38,6 @@ navbar = dbc.NavbarSimple(
     sticky="top",
 
 )
-
-
-def Loading():
-    pass
 
 
 def Error(errorType, symbol):
@@ -112,9 +120,8 @@ def Stock(symbol):
 def LandingPage():
     return html.Div(className="container-fluid test", children=[
         dbc.Jumbotron([
-            html.H1("Jumbotron", className="display-3"),
-            html.P("Use a jumbotron to call attention to featured content or information.", className="lead", ),
-            html.P("Jumbotrons use utility classes for typography and spacing to suit the larger container."),
-            html.P(dbc.Button("Learn more", color="primary"), className="lead"),
+            html.H1("Look up a Stock", className="display-3"),
+            html.P("Try looking up TSLA or AAPL, you just need to type in there ticker", className="lead", ),
+            search_bar
         ])
     ])
