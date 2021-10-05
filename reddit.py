@@ -3,7 +3,6 @@ from database import Database
 import datetime as dt
 import pandas as pd
 import os
-import psycopg2
 
 
 class RedditPipe:

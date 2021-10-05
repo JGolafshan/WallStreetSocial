@@ -1,10 +1,9 @@
 import psycopg2
 import os
 import pandas.io.sql as sqlio
-import datetime as dt
 import spacy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from model_utils.preprocess import preprocess
+from models.model_utils.preprocess import preprocess
 
 
 class Database:
