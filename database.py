@@ -11,9 +11,8 @@ class Database:
 
     """
 
-    def __init__(self):
-        self.conn = psycopg2.connect(
-            database="WallStreet-Social", user='postgres', password='123', host='127.0.0.1', port='5432')
+    def __init__(self, conn):
+        self.conn = conn
         self.cursor = self.conn.cursor()
 
     def createFromExisting(self, file):

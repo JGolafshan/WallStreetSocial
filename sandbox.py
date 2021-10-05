@@ -1,11 +1,11 @@
-import cProfile
 import database
+import psycopg2
 
-db = database.Database()
+conn = psycopg2.connect(database="WallStreet-Social",
+                        user='postgres',
+                        password='123',
+                        host='127.0.0.1',
+                        port='5432')
 
-pr = cProfile.Profile()
-pr.enable()
-db.loadCommentBatch(0,0)
-pr.disable()
-# after your program ends
-pr.print_stats(sort="tottime")
+databse = database.Database(conn=conn)
+print(databse.loadCommentBatch(0, 0))
