@@ -1,13 +1,16 @@
 # Wall Street Social
 Is an open source piece of software that is designed to allow anyone to quickly get familiar with the basics of textual analysis. It features a preconfigured database schema, preconfigured pipelines to fill the database with reddit comments, and a pretrained named entity recognition model that is used to pull out what stocks are being mentioned in a post.
 
+* [Requirements ](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#requirements)
 * [Features and Updates](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#features-and-updates)
 * [Introduction](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#features-and-updates)
 * [Directory Explained](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#directory-explained)
 * [Resources and Dataset Descriptions](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#resources-and-dataset-descriptions)
 * [About the ML Model](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#about-the-ml-model)
 * [Python Code Example](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#python-code-example)
-
+## Requirements 
+postgreq 
+reddit api access
 ## Features and Updates
 ## Introduction
 ## Directory Explained
