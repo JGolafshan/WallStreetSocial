@@ -10,7 +10,6 @@ Is an open source piece of software that is designed to allow anyone to quickly 
 * [Python Code Example](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#python-code-example)
 ## Requirements 
 postgreq 
-reddit api access
 ## Features and Updates
 ## Introduction
 ## Directory Explained
