@@ -9,6 +9,8 @@ Is an open source piece of software that is designed to allow anyone to quickly 
 * [About the ML Model](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#about-the-ml-model)
 * [Python Code Example](https://github.com/JGolafshan/WallStreetSocial/blob/master/README.md#python-code-example)
 ## Requirements 
+postgreq 
+reddit api access
 ## Features and Updates
 ## Introduction
 ## Directory Explained
