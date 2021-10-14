@@ -1,0 +1,12 @@
+CREATE TABLE public."Comment"
+                (
+                    "CommentID" SERIAL,
+                    "CommentAuthor" text,
+                    "CommentPostDate" timestamp without time zone,
+                    "CommentText" text,
+                    "CommentHasTicker" boolean,
+                    PRIMARY KEY ("CommentID")
+                );
+
+ALTER TABLE public."Comment"
+    OWNER to postgres;
