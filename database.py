@@ -7,18 +7,14 @@ from models.model_utils.preprocess import preprocess
 
 
 class Database:
-    """
-
-    """
+    """"""
 
     def __init__(self, conn):
         self.conn = conn
         self.cursor = self.conn.cursor()
 
     def createFromExisting(self, file):
-        """
-
-        """
+        """"""
         dir_name = os.path.dirname(os.path.abspath(__file__))
         folder = "dependencies"
         file = f"{dir_name}\{folder}\{file}"
@@ -28,17 +24,13 @@ class Database:
         self.conn.commit()
 
     def createMerged(self):
-        """
-
-        """
-        files = ["createRedditTableSimplified.txt", "createTickerTable.txt"]
+        """"""
+        files = ["createRedditCommentsTable.txt", "createTickerTable.txt"]
         for i in files:
             self.createFromExisting(i)
 
     def redditDump(self, path):
-        """
-
-        """
+        """"""
         with open(path, 'r', encoding='utf-8-sig') as f:
             next(f)
             self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
