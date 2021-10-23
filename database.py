@@ -1,87 +1,95 @@
-import psycopg2
-import os
-import pandas.io.sql as sqlio
+import sqlite3
 import spacy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from models.model_utils.preprocess import preprocess
 
 
-class Database:
-    """"""
-
-    def __init__(self, conn):
-        self.conn = conn
+class DatabasePipe:
+    """
+    This class is used for the creation of an sqlite database/tables
+    """
+    def __init__(self):
+        self.conn = sqlite3.connect('WallStreetBets.db')
         self.cursor = self.conn.cursor()
 
-    def createFromExisting(self, file):
-        """"""
-        dir_name = os.path.dirname(os.path.abspath(__file__))
-        folder = "dependencies"
-        file = f"{dir_name}\{folder}\{file}"
-        read_doc = open(file, "r")
-        to_sql = read_doc.read()
-        self.cursor.execute(to_sql)
+    def create_comment_table(self):
+        """
+        generates the sql need for the the comments table
+        To create the tables use 'table_automation'
+        this is an internal function.
+        """
+        self.cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS Comment 
+            (
+                CommentID integer PRIMARY KEY AUTOINCREMENT,
+                CommentAuthor text,
+                CommentPostDate TIMESTAMP,
+                CommentText text,
+                CommentHasTicker boolean
+            );
+            """
+        )
         self.conn.commit()
 
-    def createMerged(self):
-        """"""
-        files = ["createRedditCommentsTable.txt", "createTickerTable.txt"]
-        for i in files:
-            self.createFromExisting(i)
+    def create_ticker_table(self):
+        """
+        generates the sql need for the the ticker table
+        To create the tables use 'table_automation'
+        this is an internal function.
+        """
+        self.cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS Ticker 
+            (
+                TickerID integer PRIMARY KEY AUTOINCREMENT,
+                CommentID integer,
+                TickerSymbol VARCHAR(5),
+                TickerSentiment float,
+                FOREIGN KEY (CommentID) REFERENCES Comment (CommentID)
+            );
+            """
+        )
+        self.conn.commit()
 
-    def redditDump(self, path):
+    def table_automation(self):
         """"""
-        with open(path, 'r', encoding='utf-8-sig') as f:
-            next(f)
-            self.cursor.copy_from(f, 'Comment', sep=',', columns=('CommentAuthor', 'CommentPostDate', 'CommentText'))
+        self.create_comment_table()
+        self.create_ticker_table()
+
+    def insert_into_comments(self, data):
+        """"""
+        for index, row in data.iterrows():
+            self.cursor.execute(f"""INSERT INTO Comment (CommentAuthor, CommentPostDate, CommentText) 
+                                  VALUES(?, ?, ?);""", [row.iloc[0], str(row.iloc[1]), row.iloc[2]])
             self.conn.commit()
 
-    def loadCommentBatch(self, before, after):
-        """
-        Function loads a batch of data from Reddit table for processing. Returns pandas dataframe representing the
-        comment data between the specified dates. Dates are input in string format, i.e. '2021-01-01'
-        """
-        sql = """
-        select * 
-        from public."Comment"
-        """
-        query_params = {'before': before, 'after': after}
-        return sqlio.read_sql_query(sql, self.conn)
-
-    def generateTickers(self):
-        """
-        loads data from the redddit table, and generates rows for ticker table
-        """
-        loadData = self.loadCommentBatch(0, 0)
+    def insert_into_ticker(self):
+        """"""
+        loadData = self.cursor.execute("SELECT * FROM Comment WHERE CommentHasTicker = None;").fetchall()
         wsb = spacy.load("E:/WallStreetSocial/models/wsb_ner")
         sia = SentimentIntensityAnalyzer()
 
         # Add to Ticker DB
-        for index, row in loadData.iterrows():
+        for row in loadData:
             text = row[3]
             doc = wsb(preprocess(text))
+            has_ticker = 0
             for en in doc.ents:
-                if (len(doc.ents) >= 1 and row[4] == None):
+                if len(doc.ents) >= 1:
+                    has_ticker = 1
                     self.cursor.execute(
                         f"""
-                            INSERT INTO public."Ticker" ("CommentID_FK", "TickerSymbol", "TickerSentiment")
-                            VALUES ({row[0]}, {"'" + str(en).replace("$", "") + "'"}, {sia.polarity_scores(text)['compound']})
-                        """
-                    )
-                    self.cursor.execute(
-                        f"""
-                            UPDATE public."Comment" 
-                            SET "CommentHasTicker" = true
-                            WHERE "CommentID" = {row[0]}
-                        """
-                    )
+                            INSERT INTO Ticker (CommentID, TickerSymbol, TickerSentiment)
+                            VALUES ({row[0]},
+                                    {"'" + str(en).replace("$", "").upper() + "'"}, 
+                                    {sia.polarity_scores(text)['compound']})
+                        """)
                     self.conn.commit()
-                else:
-                    self.cursor.execute(
-                        f"""
-                            UPDATE public."Comment" 
-                            SET "CommentHasTicker" = false
-                            WHERE "CommentID" = {row[0]}
-                        """
-                    )
-                    self.conn.commit()
+            self.cursor.execute(
+                f"""
+                    UPDATE Comment
+                    SET CommentHasTicker = {has_ticker}
+                    WHERE CommentID = {row[0]}
+                """)
+            self.conn.commit()
