@@ -20,6 +20,6 @@ def DatabasePipeline():
     # Finds Tickers
     createDB.insert_into_ticker()
 
-
+# Print The Tables
 print(createDB.cursor.execute("SELECT * FROM Ticker").fetchall())
 print(createDB.cursor.execute("SELECT * FROM Comment").fetchall())
