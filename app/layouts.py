@@ -22,7 +22,7 @@ search_bar = dbc.Row(
     [Input('submit-val', 'n_clicks')],
     [State('input-on-submit', 'value')])
 def update_output(n_clicks, value):
-    if (value != None):
+    if value != None:
         return "/stock/" + value
 
 
