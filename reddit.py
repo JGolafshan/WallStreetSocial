@@ -1,5 +1,4 @@
 from pmaw import PushshiftAPI
-from database import Database
 import datetime as dt
 import pandas as pd
 import os
@@ -12,40 +11,34 @@ class RedditPipe:
     to a file in the temp folder, and then loads them into the postgres database,
     which is set up in the database.py file.
     """
+    def __init__(self):
+        pass
 
-    def __init__(self, subreddit, before, after):
-        self.before = before
-        self.after = after
-        self.subreddit = subreddit
-
-    def getRedditComments(self):
+    def get_reddit_comments(self, subreddit, start, end):
         """
         Returns a dataframe containing comments from a particular subreddit between
         given date frame defined by before and after.
         Before and after variables must be converted to epoch time before calling them as arguments.
         """
         api = PushshiftAPI()
-        comments = api.search_comments(subreddit=self.subreddit, before=self.before, after=self.after)
+        comments = api.search_comments(subreddit=subreddit, before=end, after=start)
         comments_df = pd.DataFrame(comments)
         return comments_df
 
     # noinspection PyMethodMayBeStatic
-    def createFinalDataframe(self, df):
+    def create_final_dataframe(self, df):
         """
         Cleans data, removes unwanted fields
         """
         clean_df = df[['id', 'created_utc', 'body']]
         clean_df['created_utc'] = pd.to_datetime(clean_df['created_utc'], unit='s')
-        clean_df = clean_df.replace(',', '', regex=True)
-        clean_df = clean_df.replace('\n', '', regex=True)
-        clean_df = clean_df.replace("'", '', regex=True)
-        clean_df = clean_df.replace('"', '', regex=True)
+        clean_df = clean_df.replace({"body": {',': '', '\n': '', "'": '', '"': ''}}, regex=True)
         return clean_df
 
     # noinspection PyMethodMayBeStatic
-    def commentsToCsv(self, df):
+    def comments_to_csv(self, df):
         """
-        Converts the dataframe to CSV which is saved for logging/debuging purposes.
+        Converts the dataframe to CSV which is saved for logging/debugging purposes.
         Which can be found in /dependencies/logs
         """
         dir_name = os.path.dirname(os.path.abspath(__file__))
@@ -55,14 +48,3 @@ class RedditPipe:
         path = f"{dir_name}\{folder}\{file_name}.csv"
         df.to_csv(path, encoding='utf-8-sig', index=False)
         return path
-
-    def redditStack(self):
-        """
-        An all in one function which pulls reddit comments puts them in the database along with logging comments
-        This function will be deprecated in the future
-        """
-        comments_df = self.getRedditComments()
-        final_df = self.createFinalDataframe(comments_df)
-        path = self.commentsToCsv(final_df)
-        db = Database()
-        return db.redditDump(path)
