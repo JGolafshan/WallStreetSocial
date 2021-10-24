@@ -9,5 +9,5 @@
 *.txt
 *.pyc
 
-build/lib/keno/keno_app.py
-kenoAPI.egg-info/PKG-INFO
+WallStreetSocial/build/lib/keno/keno_app.py
+WallStreetSocial.egg-info

@@ -1,0 +1,45 @@
+{
+  "lang":"en",
+  "name":"pipeline",
+  "version":"0.0.0",
+  "spacy_version":">=3.1.2,<3.2.0",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "spacy_git_version":"e1f88de72",
+  "vectors":{
+    "width":350,
+    "vectors":215866,
+    "keys":215866,
+    "name":"en_wsb"
+  },
+  "labels":{
+    "ner":[
+      "TICK"
+    ]
+  },
+  "pipeline":[
+    "ner"
+  ],
+  "components":[
+    "ner"
+  ],
+  "disabled":[
+
+  ],
+  "performance":{
+    "ents_f":0.9940815629,
+    "ents_p":0.9917800352,
+    "ents_r":0.9963937973,
+    "ents_per_type":{
+      "TICK":{
+        "p":0.9917800352,
+        "r":0.9963937973,
+        "f":0.9940815629
+      }
+    },
+    "ner_loss":38.8258910814
+  }
+}
