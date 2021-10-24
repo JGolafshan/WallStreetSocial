@@ -11,6 +11,7 @@ class RedditPipe:
     to a file in the temp folder, and then loads them into the postgres database,
     which is set up in the database.py file.
     """
+
     def __init__(self):
         pass
 
@@ -40,9 +41,7 @@ class RedditPipe:
 
     # noinspection PyMethodMayBeStatic
     def create_final_dataframe(self, df):
-        """
-        Cleans data, removes unwanted fields
-        """
+        """Cleans data, removes unwanted fields"""
         clean_df = df[['id', 'created_utc', 'body']]
         clean_df['created_utc'] = pd.to_datetime(clean_df['created_utc'], unit='s')
         clean_df = clean_df.replace({"body": {',': '', '\n': '', "'": '', '"': ''}}, regex=True)
