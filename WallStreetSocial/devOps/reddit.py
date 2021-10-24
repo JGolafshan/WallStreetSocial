@@ -14,12 +14,25 @@ class RedditPipe:
     def __init__(self):
         pass
 
+    def convert_date(self, date):
+        """converts a date/datetime to a format that Pushshift can read"""
+        datetime = str(date).split(" ")
+        if len(datetime) == 1:
+            datetime = datetime[0] + " 00:00:00"
+        else:
+            datetime = datetime[0] + " " + datetime[1]
+
+        return int(dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S').timestamp())
+
     def get_reddit_comments(self, subreddit, start, end):
         """
         Returns a dataframe containing comments from a particular subreddit between
         given date frame defined by before and after.
         Before and after variables must be converted to epoch time before calling them as arguments.
         """
+        end = self.convert_date(end)
+        start = self.convert_date(start)
+
         api = PushshiftAPI()
         comments = api.search_comments(subreddit=subreddit, before=end, after=start)
         comments_df = pd.DataFrame(comments)
