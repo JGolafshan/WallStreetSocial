@@ -67,7 +67,7 @@ class DatabasePipe:
     def insert_into_ticker(self):
         """"""
         loadData = self.cursor.execute("SELECT * FROM Comment WHERE CommentHasTicker = None;").fetchall()
-        wsb = spacy.load("/models/wsb_ner")
+        wsb = spacy.load("../models/wsb_ner")
         sia = SentimentIntensityAnalyzer()
 
         # Add to Ticker DB
