@@ -1,5 +1,5 @@
-import database
-import reddit
+from WallStreetSocial.backend import reddit
+from WallStreetSocial.backend import database
 
 
 # Pulls comments froms reddit and adds them to SQLITE DB
