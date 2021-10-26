@@ -1,6 +1,6 @@
+import os
 import sqlite3
 import spacy
-import os
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from WallStreetSocial.models.model_utils.preprocess import preprocess
 
@@ -60,10 +60,10 @@ class DatabasePipe:
 
     def insert_into_comments(self, data):
         """"""
-        for index, row in data.iterrows():
-            self.cursor.execute(f"""INSERT INTO Comment (CommentAuthor, CommentPostDate, CommentText) 
-                                  VALUES(?, ?, ?);""", [row.iloc[0], str(row.iloc[1]), row.iloc[2]])
-            self.conn.commit()
+        data = data.to_records(index=False).tolist()
+        self.cursor.executemany(f"""INSERT INTO Comment (CommentAuthor, CommentPostDate, CommentText) 
+                                    VALUES(?, ?, ?);""", data, )
+        self.conn.commit()
 
     def insert_into_ticker(self):
         """"""
