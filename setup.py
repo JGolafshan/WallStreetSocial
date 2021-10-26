@@ -22,6 +22,7 @@ setup(
         'requests',
         'pmaw',
         'spacy',
+        'gensim',
         'vaderSentiment',
     ],
     classifiers=[
