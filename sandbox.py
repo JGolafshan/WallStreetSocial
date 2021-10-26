@@ -5,7 +5,7 @@ from WallStreetSocial.backend import database
 # Pulls comments froms reddit and adds them to SQLITE DB
 reddit = reddit.RedditPipe()
 def redditStack():
-    comments_df = reddit.get_reddit_comments("WallStreetBets", start="2020-01-02 10:02:00", end="2020-01-03 10:02:00")
+    comments_df = reddit.get_reddit_comments("WallStreetBets", start="2019-09-02 10:02:00", end="2019-09-02 10:06:00")
     final_df = reddit.create_final_dataframe(comments_df)
     sql = createDB.insert_into_comments(final_df)
     return sql
