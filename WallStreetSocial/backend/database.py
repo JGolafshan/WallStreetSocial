@@ -1,5 +1,6 @@
 import sqlite3
 import spacy
+import os
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from WallStreetSocial.models.model_utils.preprocess import preprocess
 
@@ -9,7 +10,7 @@ class DatabasePipe:
     This class is used for the creation of an sqlite database/tables
     """
     def __init__(self):
-        self.conn = sqlite3.connect('../WallStreetBets.db')
+        self.conn = sqlite3.connect(os.getcwd()+'/WallStreetBets.db')
         self.cursor = self.conn.cursor()
 
     def create_comment_table(self):
@@ -66,8 +67,8 @@ class DatabasePipe:
 
     def insert_into_ticker(self):
         """"""
-        loadData = self.cursor.execute("SELECT * FROM Comment WHERE CommentHasTicker = None;").fetchall()
-        wsb = spacy.load("../models/wsb_ner")
+        loadData = self.cursor.execute("SELECT * FROM Comment WHERE CommentHasTicker is null;").fetchall()
+        wsb = spacy.load(os.getcwd()+"/WallStreetSocial/models/wsb_ner")
         sia = SentimentIntensityAnalyzer()
 
         # Add to Ticker DB
