@@ -1,7 +1,6 @@
 import os
 import sqlite3
 import spacy
-from docutils.nodes import docinfo
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from WallStreetSocial.models.model_utils.preprocess import preprocess
 

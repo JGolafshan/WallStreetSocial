@@ -26,7 +26,7 @@ class RedditPipe:
 
         return int(dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S').timestamp())
 
-    def get_reddit_comments(self, subreddit, start, end):
+    def retrieve_submissions(self, subreddit, start, end):
         """
         Returns a dataframe containing comments from a particular subreddit between
         given date frame defined by before and after.
