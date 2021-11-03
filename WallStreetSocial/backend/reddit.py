@@ -15,6 +15,7 @@ class RedditPipe:
     def __init__(self):
         pass
 
+    # noinspection PyMethodMayBeStatic
     def convert_date(self, date):
         """converts a date/datetime to a format that Pushshift can read"""
         datetime = str(date).split(" ")
@@ -40,7 +41,7 @@ class RedditPipe:
         return comments_df
 
     # noinspection PyMethodMayBeStatic
-    def create_final_dataframe(self, df):
+    def clean_submissions(self, df):
         """Cleans data, removes unwanted fields"""
         clean_df = df.loc[:, ['id', 'created_utc', 'body']]
         clean_df['created_utc'] = pd.to_datetime(clean_df['created_utc'], unit='s')
@@ -48,7 +49,7 @@ class RedditPipe:
         return clean_df
 
     # noinspection PyMethodMayBeStatic
-    def comments_to_csv(self, df):
+    def log_submissions(self, df):
         """
         Converts the dataframe to CSV which is saved for logging/debugging purposes.
         Which can be found in /dependencies/logs
