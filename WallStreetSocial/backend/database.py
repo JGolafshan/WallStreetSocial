@@ -85,19 +85,17 @@ class DatabasePipe:
             text = row[3]
             doc = wsb(preprocess(text))
             has_ticker = 0
-            ents = doc.ents
-            ents = ents.__str__()
-
-            if len(doc.ents) >= 1:
-                has_ticker = 1
-                self.cursor.executemany(
-                    f"""
-                        INSERT INTO Ticker (CommentID, TickerSymbol, TickerSentiment)
-                        VALUES ({row[0]},
-                        ?, 
-                        {sia.polarity_scores(text)['compound']})
-                    """, [ents],)
-                self.conn.commit()
+            for en in doc.ents:
+                if len(doc.ents) >= 1:
+                    has_ticker = 1
+                    self.cursor.execute(
+                        f"""
+                            INSERT INTO Ticker (CommentID, TickerSymbol, TickerSentiment)
+                            VALUES ({row[0]},
+                            {"'" + str(en).replace("$", "").upper() + "'"}, 
+                            {sia.polarity_scores(text)['compound']})
+                        """)
+                    self.conn.commit()
             self.cursor.execute(
                 f"""
                     UPDATE Comment
