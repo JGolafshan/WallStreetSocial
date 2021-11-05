@@ -27,8 +27,7 @@ class DatabasePipe:
                 CommentID integer PRIMARY KEY AUTOINCREMENT,
                 CommentAuthor text,
                 CommentPostDate TIMESTAMP,
-                CommentText text,
-                CommentHasTicker boolean
+                CommentText text
             );
             """
         )
@@ -54,51 +53,37 @@ class DatabasePipe:
         )
         self.conn.commit()
 
-    def table_automation(self):
-        """
-        generates the tables in sql.
-        """
-        self.create_comment_table()
-        self.create_ticker_table()
-
     def insert_into_comments(self, data):
-        """
-        inserts comments into the Comment Table
-        """
+        """inserts comments into the Comment table"""
         data = data.to_records(index=False).tolist()
         self.cursor.executemany(f"""
                                     INSERT INTO Comment (CommentAuthor, CommentPostDate, CommentText)VALUES(?, ?, ?);
                                 """, data, )
         self.conn.commit()
 
-    def insert_into_ticker(self):
-        """
-        Uses the the sentiment and ticker models to generate tickers and sentiment for each comment
-        """
-        loadData = self.cursor.execute("SELECT * FROM Comment WHERE CommentHasTicker is null;").fetchall()
+    def insert_into_ticker(self, comment_id, ticker, sentiment):
+        """inserts tickers into the Ticker table"""
+        self.cursor.execute(
+            f""" INSERT INTO Ticker (CommentID, TickerSymbol, TickerSentiment) VALUES (?, ?, ?)""",
+            (comment_id, str(ticker), sentiment))
+        self.conn.commit()
+
+    def ticker_generation(self):
+        """Uses the the sentiment and ticker models to generate tickers and sentiment for each comment"""
+        loadData = self.cursor.execute("""SELECT C.CommentID, C.CommentText FROM Comment C 
+                                          WHERE C.CommentID NOT IN (SELECT T.CommentID FROM Ticker T)""").fetchall()
         wsb = spacy.load(os.getcwd() + "/WallStreetSocial/models/wsb_ner")
         sia = SentimentIntensityAnalyzer()
-
         # Add to Ticker DB
         for row in loadData:
-            text = row[3]
-            doc = wsb(preprocess(text))
-            has_ticker = 0
-            for en in doc.ents:
-                if len(doc.ents) >= 1:
-                    has_ticker = 1
-                    self.cursor.execute(
-                        f"""
-                            INSERT INTO Ticker (CommentID, TickerSymbol, TickerSentiment)
-                            VALUES ({row[0]},
-                            {"'" + str(en).replace("$", "").upper() + "'"}, 
-                            {sia.polarity_scores(text)['compound']})
-                        """)
-                    self.conn.commit()
-            self.cursor.execute(
-                f"""
-                    UPDATE Comment
-                    SET CommentHasTicker = {has_ticker}
-                    WHERE CommentID = {row[0]}
-                """)
-            self.conn.commit()
+            doc = wsb(preprocess(row[1]))
+            if len(doc.ents) > 0:
+                for ticker in doc.ents:
+                    self.insert_into_ticker(row[0], ticker, sia.polarity_scores(row[1])['compound'])
+            else:
+                self.insert_into_ticker(row[0], None, None)
+
+    def table_automation(self):
+        """generates the tables in sql."""
+        self.create_comment_table()
+        self.create_ticker_table()
