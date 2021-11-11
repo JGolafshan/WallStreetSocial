@@ -26,7 +26,7 @@ class DatabasePipe:
             (
                 CommentID integer PRIMARY KEY AUTOINCREMENT,
                 CommentAuthor text,
-                CommentPostDate TIMESTAMP,
+                CommentPostDate timestamp,
                 CommentText text
             );
             """
