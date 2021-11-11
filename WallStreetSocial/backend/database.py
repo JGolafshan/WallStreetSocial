@@ -1,6 +1,6 @@
 import os
 import sqlite3
-import spacy
+from spacy import load
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from WallStreetSocial.models.model_utils.preprocess import preprocess
 
@@ -65,14 +65,14 @@ class DatabasePipe:
         """inserts tickers into the Ticker table"""
         self.cursor.execute(
             f""" INSERT INTO Ticker (CommentID, TickerSymbol, TickerSentiment) VALUES (?, ?, ?)""",
-            (comment_id, str(ticker), sentiment))
+            (comment_id, str(ticker).upper(), sentiment))
         self.conn.commit()
 
     def ticker_generation(self):
         """Uses the the sentiment and ticker models to generate tickers and sentiment for each comment"""
         loadData = self.cursor.execute("""SELECT C.CommentID, C.CommentText FROM Comment C 
                                           WHERE C.CommentID NOT IN (SELECT T.CommentID FROM Ticker T)""").fetchall()
-        wsb = spacy.load(os.getcwd() + "/WallStreetSocial/models/wsb_ner")
+        wsb = load(os.getcwd() + "/WallStreetSocial/models/wsb_ner")
         sia = SentimentIntensityAnalyzer()
         # Add to Ticker DB
         for row in loadData:
