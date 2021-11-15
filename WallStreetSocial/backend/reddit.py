@@ -44,8 +44,7 @@ class RedditPipe:
     def clean_submissions(self, df):
         """Cleans data, removes unwanted fields"""
         clean_df = df.loc[:, ['id', 'created_utc', 'body']]
-        clean_df['created_utc'] = pd.to_datetime(df["created_utc"], unit="s")
-        clean_df['created_utc'] = clean_df['created_utc'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
+        clean_df['created_utc'] = pd.to_datetime(df["created_utc"],  unit='s', errors='ignore')
         clean_df = clean_df.replace({"body": {',': '', '\n': '', "'": '', '"': '', r'http\S+': ''}}, regex=True)
         return clean_df
 
