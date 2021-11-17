@@ -3,6 +3,7 @@ Is an open source piece of software that is designed to allow anyone to quickly 
 
 ## Documentation
 Documentaton of this project can be found [here](https://github.com/JGolafshan/WallStreetSocial/wiki)
+
 It is still being writen.
 
 ## About the ML Model
