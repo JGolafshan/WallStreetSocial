@@ -11,7 +11,8 @@ class DatabasePipe:
     """
 
     def __init__(self):
-        self.conn = sqlite3.connect(os.getcwd() + '/WallStreetBets.db')
+        path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        self.conn = sqlite3.connect(path + '/WallStreetBets.db')
         self.cursor = self.conn.cursor()
 
     def create_comment_table(self):
@@ -26,7 +27,7 @@ class DatabasePipe:
             (
                 CommentID integer PRIMARY KEY AUTOINCREMENT,
                 CommentAuthor text,
-                CommentPostDate timestamp,
+                CommentPostDate DATETIME,
                 CommentText text
             );
             """

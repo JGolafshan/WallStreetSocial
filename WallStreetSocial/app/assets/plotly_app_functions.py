@@ -1,6 +1,5 @@
-import yfinance as yf
 import math
-
+from WallStreetSocial.backend import database
 
 def millify(n):
     millnames = ['', ' K', ' M', ' B', ' T']
@@ -13,17 +12,19 @@ def millify(n):
 
 
 def verifyStockInput(symbol):
-    ticker = yf.Ticker(symbol)
-    if ticker.calendar is None:
+    connection = database.DatabasePipe()
+    result = connection.cursor.execute(
+        f"""
+            SELECT DISTINCT TickerSymbol
+            FROM Ticker
+            WHERE TickerSymbol != "NONE" AND TickerSymbol = '{symbol}';
+        """
+    ).fetchone()
+    if result is None:
         return False
-    return True
 
+    elif len(result) == 1:
+        return True
 
-def tickerResults(symbol):
-    ticker = yf.Ticker(ticker=symbol)
-    ticker_info = ticker.info
-    change = round(ticker_info.get('regularMarketPrice') - ticker_info.get('regularMarketPreviousClose'), 3)
-    change_percentage = round((change / ticker_info.get('regularMarketPreviousClose')) * 100, 2)
-
-    return change, change_percentage, ticker_info
-
+def find_common_terms():
+    pass
