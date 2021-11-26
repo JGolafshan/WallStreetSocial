@@ -1,63 +1,65 @@
 import os
 import time
+from app import app
+import pandas as pd
 import datetime as dt
-import dash_bootstrap_components as dbc
+import plotly.express as px
+import dash_extensions as de
+import plotly.graph_objects as go
 import dash_core_components as dcc
 import dash_html_components as html
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from dash.dependencies import Input, Output, State
-from dash_extensions import Keyboard
+import dash_bootstrap_components as dbc
 from WallStreetSocial.backend import database
-from app import app
+from assets.plotly_app_functions import find_common_terms
+from dash.dependencies import Input, Output, State
+import yfinance as yf
 
-# Elements
 
-def search_bar():
+def date_range(year, month, day):
     return html.Div([
-        Keyboard(id="keyboard"),
-        dbc.Row([
-            dbc.Col(
-                dbc.Input(id="submit-val", type="search", placeholder="Search Stock Tickers", className="search_bar")),
-        ],
-            className="w-25 mx-auto",
-            align="center",
-        )
-    ])
-
-
-def date_picker():
-    return html.Div([
-        dcc.DatePickerRange(
-            id='my-date-picker-range',
+        dcc.DatePickerSingle(
+            id='my-date-picker-single',
             min_date_allowed=dt.date(1995, 8, 5),
             max_date_allowed=dt.date(dt.date.today().year, dt.date.today().month, dt.date.today().day),
             initial_visible_month=dt.date(2017, 8, 5),
-            end_date=dt.date(2017, 8, 25),
-            start_date=dt.date(2017, 8, 25)
+            date=dt.date(year, month, day)
         ),
     ])
 
 
-def navbar():
-    return html.Div([
-        dbc.Col([
-            search_bar(),
-            date_picker()
-        ])
-    ], className="nav_bar")
+dropdown = dbc.DropdownMenu(
+    label="Date Selection",
+    group=True,
+    children=[
+        dbc.Row([date_range(year=2021, month=1, day=1)]),
+        dbc.Row([date_range(year=2021, month=1, day=1)])
+    ],
+)
+search_bar = html.Div([
+    de.Keyboard(id="keyboard"),
+    dbc.Row([
+        dbc.Col(
+            dbc.Input(id="submit-val", type="search", placeholder="Search Stock Tickers", className="search_bar")),
+    ])
+])
 
 
-@app.callback(
-    Output('output-container-date-picker-range', 'children'),
-    Input('my-date-picker-range', 'start_date'),
-    Input('my-date-picker-range', 'end_date'))
-def update_output(start_date, end_date):
-    if start_date is not None:
-        start_date_object = dt.date.fromisoformat(start_date)
-    if end_date is not None:
-        end_date_object = dt.date.fromisoformat(end_date)
+@app.callback(Output("url", "pathname"), Input("keyboard", "keydown"), State("submit-val", "value"))
+def keydown(event, value):
+    time.sleep(1.5)
+    if type(event) is not None:
+        if event.get("key") == "Enter":
+            return "/stock/" + value
+
+
+def nav_bar():
+    return dbc.NavbarSimple(
+        children=[
+            search_bar,
+            dropdown
+        ],
+        dark=True,
+    )
 
 
 def grouped_ticker_sentiment(dataframe):
@@ -101,50 +103,88 @@ def stock_table(dataframe):
     return fig
 
 
-@app.callback(Output("url", "pathname"), Input("keyboard", "keydown"), State("submit-val", "value"))
-def keydown(event, value):
-    time.sleep(1.5)
-    if type(event) is not None:
-        if event.get("key") == "Enter":
-            return "/stock/" + value
+def line_graph(dataframe):
+    fig = px.line(dataframe, x="Date", y="Change", )
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font_color='#7b7d7e',
+        width=800,
+        font=dict(size=9, ),
+        bargap=0.4,
+        title=dict(yanchor="top", y=0.95, x=0.5, xanchor="center"),
+        title_font=dict(size=20, color="#ffffff"),
+        legend=dict(orientation="h", yanchor="top", y=1.1, x=0.5, xanchor="center"),
+        legend_title_text="",
+    )
+    fig.update_traces(marker_line_width=0, opacity=0.9)
+    fig.update_yaxes(showgrid=False, title=""),
+    fig.update_xaxes(showgrid=False, title="", )
+    return fig
+
+
+def common_words_table(dataframe):
+    fig = go.Figure(data=[go.Table(
+        header=dict(values=list(dataframe.columns),
+                    fill_color='#808080',
+                    align='left'),
+        cells=dict(values=[dataframe["Word"], dataframe["Count"]],
+                   fill_color='rgba(51, 51, 51, 0.5)',
+                   align='left'))
+    ])
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font_color='#ffffff'
+    )
+    return fig
+
+
+def graph_body(title, desc, html_element):
+    return html.Div([
+        html.H1(title),
+        html.P(desc),
+        dcc.Graph(figure=html_element)
+    ])
 
 
 # Pages
 
-def page_landing():
+def landing_page():
     connection = database.DatabasePipe()
     path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + "/WallStreetSocial/sql_queries/"
     result = connection.cursor.execute(open(file=path + "GroupSentiments.txt").read())
     long_df = pd.DataFrame.from_records(result, columns=['Symbol', 'Positive Sentiment',
                                                          'Negative Sentiment', 'Neutral Sentiment'])
     long_df["Total"] = long_df["Positive Sentiment"] + long_df["Negative Sentiment"] + long_df["Neutral Sentiment"]
-    content = dbc.Container(
-        className="container", children=[
-            html.Div([
-                dcc.Graph(id='example-graph-2', figure=grouped_ticker_sentiment(long_df.head(15)))
-            ], className="center-block"),
-            html.Div([
-                dcc.Graph(id='example-graph-2', figure=stock_table(long_df))
-            ], className="")
+
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([dcc.Graph(figure=grouped_ticker_sentiment(long_df.head(15)))])
+        ]),
+        dbc.Row([
+            dbc.Col([dcc.Graph(figure=stock_table(long_df))])
         ])
-    return content
+    ])
 
 
-# graph-single
-def page_error(errorType, symbol):
-    errorDesc = ""
-    if errorType == "stock":
-        errorDesc = "Sorry, we cant find " + symbol
+def terminal_page(symbol):
+    ticker = yf.Ticker(ticker=symbol)
+    history = ticker.history()
+    history.reset_index(inplace=True)
+    history['Change'] = (history['Close'] / history['Close'].shift(1)) - 1
 
-    if errorType == "url":
-        errorDesc = "Sorry, an error occurred with our website"
+    common_words = find_common_terms(symbol)
+    long_df = pd.DataFrame.from_records(common_words, columns=['Word', 'Count']).sort_values(by='Count',
+                                                                                             ascending=False)
 
-    errorMessage = html.Div(
-        className="errorDisplay",
-        children=[
-            html.H1("Oops!"),
-            html.H3("Something went wrong"),
-            html.H5(errorDesc),
-            html.P(dbc.Button("Go Back", color="light", href="/"), className="mr-1"),
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([graph_body("ahaha", "hahah", line_graph(history))]),
+            dbc.Col([graph_body("ahaha", "hahah", common_words_table(long_df))])
         ])
-    return errorMessage
+    ])
+
+
+def error_page():
+    pass

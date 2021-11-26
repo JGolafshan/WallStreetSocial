@@ -2,7 +2,7 @@ from app import app
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from layouts import page_landing, navbar, page_error
+from layouts import nav_bar, landing_page, terminal_page
 from assets import plotly_app_functions as funcs
 
 
@@ -18,7 +18,7 @@ def display_page(pathname):
 
     if pathname == '/':
         app.title = "WallStreet Social"
-        layout = [navbar(), page_landing()]
+        layout = [nav_bar(), landing_page()]
         return layout
 
     elif "/stock/" in pathname:
@@ -27,13 +27,13 @@ def display_page(pathname):
         check = funcs.verifyStockInput(symbol)
 
         if check is True:
-            layout = []
+            layout = [nav_bar(), terminal_page(symbol)]
             return layout
         else:
-            layout = [navbar(), page_error("stock", symbol=symbol)]
+            layout = []
             return layout
     else:
-        layout = [navbar(), page_error("url", symbol="")]
+        layout = []
         return layout
 
 

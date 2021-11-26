@@ -1,5 +1,12 @@
 import math
+
+import numpy as np
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.tokenize import word_tokenize
+
 from WallStreetSocial.backend import database
+
 
 def millify(n):
     millnames = ['', ' K', ' M', ' B', ' T']
@@ -26,5 +33,39 @@ def verifyStockInput(symbol):
     elif len(result) == 1:
         return True
 
-def find_common_terms():
-    pass
+
+def find_common_terms(symbol):
+    db = database.DatabasePipe()
+    query = db.cursor.execute(f"""
+    SELECT 
+       t.TickerSymbol,
+       c.CommentText
+    FROM Ticker t INNER JOIN Comment c
+    ON t.CommentID = c.CommentID
+    WHERE t.TickerSymbol ="{symbol}";
+    """).fetchall()
+    en_stops = set(stopwords.words('english'))
+    ps = PorterStemmer()
+    list1 = []
+
+    for comment in query:
+        word_list = word_tokenize(comment[1])
+        for word in word_list:
+            word_removed = False
+
+            if len(word) <= 2:
+                word_removed = True
+
+            if word in en_stops:
+                word_removed = True
+
+            if word_removed is True:
+                break
+            else:
+                list1.append(word)
+
+    uniques_values = np.unique(list1)
+    final_list = []
+    for i in range(0, len(uniques_values)):
+        final_list.append((uniques_values[i], list1.count(uniques_values[i])))
+    return final_list
