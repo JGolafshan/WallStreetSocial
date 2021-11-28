@@ -1,3 +1,113 @@
+/* MISC */
+html, body{
+    background-color: #202226;
+    color: #DFDDD9;
+}
+
+/* Nav Bar */
+.bg-light {
+    --bs-bg-opacity: 1;
+    background-color: #000000 !important;
+}
+
+.navbar>.container{
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-direction: column;
+ width: 100%;
+ text-align: center;
+ align-items: center;
+
+}
+
+#submit-val, .dropdown-toggle, .dropdown-menu.show, .btn-group>.btn:hover, .DateInput_input{
+    padding: 0;
+    margin: 0;
+    font-size: 75%;
+    background-color: #333333;
+    border: 0;
+
+    border-radius: 0.1 rem;
+    color: rgba(191,191,191, 0.7);
+    justify: center;
+    align: center;
+}
+
+.btn-group-vertical>.btn, .btn-group>.btn, .btn-group>.btn:hover{
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+}
+
+#submit-val{
+    padding: 0.3rem;
+    padding-left: 0.8rem;
+    padding-right: 10rem;
+}
+
+.form-control:focus, input[type="search"]::placeholder{
+    color: rgba(191,191,191,0.7);
+}
+
+.drop_menu{
+    margin-right: 0.8rem;
+}
+
+.btn-group.show{
+    color: red;
+}
+
+.dropdown-menu{
+    min-width: 0;
+    transform: translate3d(0px, 34px, 0px);
+}
+
+.SingleDatePickerInput {
+    border: 0;
+    border-bottom: 2px solid grey;
+
+}
+
+.DateInput_input{
+    font-size: 125%;
+    #padding-top: 0.3rem;
+}
+
+.DateInput{
+    border: 0;
+}
+
+
+/* Home Page */
+.spacer{
+    margin-bottom: 2.5rem;
+    margin-top: 4.5rem;
+}
+
+
+/* Stock Page */
+.stock-graph-title, .stock-graph-description, stock-graph-graph, .stock-container{
+    padding: 0;
+    margin: 0;
+}
+
+.stock-container{
+    margin-top: 4.5rem;
+    margin-bottom: 2.25rem;
+    padding: 0.5rem;
+    color: rgba(255,255,255, 0.8);
+    background-color: rgb(191,191,191, 0.065);
+    border-radius: 0.55rem;
+}
+
+.stock-container > p{
+    font-size: 90%;
+    font-weight: bold;
+    padding-bottom: 0.4rem;
+    border-bottom: 1.5px solid grey;
+}
+
+/* Error Page */
 .errorDisplay{
     text-align: center;
     position: absolute;
@@ -6,79 +116,4 @@
     transform: translate(-50%, -50%);
     margin: 0;
     padding-bottom: 2.6rem;
-}
-
-.test{
-    background: url(chart_manager_bg_medium.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    height:100%;
-    position: absolute;
-
-}
-
-.jumbotron{
-    position: absolute;
-    text-align: center;
-    color: #ff1493;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.errorDisplay.H1{
-    font-size: 3rem;
-}
-
-.company-header{
-    background: #2b2b2b;
-    color: #fff;
-    position: relative;
-    padding-top: 20px;
-    padding-bottom: 0;
-    overflow: hidden;
-}
-
-.company-info{
-    background: #D9D9D6;
-    color: #fff;
-    position: relative;
-    padding-top: 20px;
-    padding-bottom: 0;
-    overflow: hidden;
-}
-
-.standard{
-    margin-top: 2rem;
-}
-
-.price{
-    font-size: 16px;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-.price_info{
-    font-size: 14px;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-
-
-
-.dl>dt{
-    font-size: 14px;
-    font-weight: 400;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-}
-
-.dl-lg{
-    font-size: 18px;
-}
-
-th:not(.CalendarDay), td:not(.CalendarDay){
-    border-bottom: 0px solid transparent;
-    padding: 0px;
-    padding-right: 0.8rem;
 }

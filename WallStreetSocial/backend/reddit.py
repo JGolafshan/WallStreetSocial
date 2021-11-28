@@ -3,7 +3,7 @@ import datetime as dt
 import pandas as pd
 import os
 
-
+pd.set_option('display.max_columns', 100)
 class RedditPipe:
     """
     This class will be used to pull reddit comments from a specific subreddit over a given time period.
@@ -44,7 +44,7 @@ class RedditPipe:
     def clean_submissions(self, df):
         """Cleans data, removes unwanted fields"""
         clean_df = df.loc[:, ['id', 'created_utc', 'body']]
-        clean_df['created_utc'] = pd.to_datetime(df["created_utc"],  unit='s', errors='ignore')
+        clean_df["created_utc"] = clean_df["created_utc"] .apply(lambda d: dt.datetime.fromtimestamp(int(d)).strftime('%Y-%m-%d %H:%M:%S'))
         clean_df = clean_df.replace({"body": {',': '', '\n': '', "'": '', '"': '', r'http\S+': ''}}, regex=True)
         return clean_df
 
