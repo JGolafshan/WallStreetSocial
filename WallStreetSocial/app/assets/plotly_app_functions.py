@@ -1,10 +1,7 @@
 import math
-
 import numpy as np
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
-
 from WallStreetSocial.backend import database
 
 
@@ -45,7 +42,6 @@ def find_common_terms(symbol):
     WHERE t.TickerSymbol ="{symbol}";
     """).fetchall()
     en_stops = set(stopwords.words('english'))
-    ps = PorterStemmer()
     list1 = []
 
     for comment in query:

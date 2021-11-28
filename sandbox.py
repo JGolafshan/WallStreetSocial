@@ -22,4 +22,3 @@ def DatabasePipeline():
     createDB.ticker_generation()
 
 
-DatabasePipeline()
