@@ -1,9 +1,13 @@
+import pprint
+
 from pmaw import PushshiftAPI
 import datetime as dt
 import pandas as pd
 import os
 
 pd.set_option('display.max_columns', 100)
+
+
 class RedditPipe:
     """
     This class will be used to pull reddit comments from a specific subreddit over a given time period.
@@ -17,36 +21,35 @@ class RedditPipe:
 
     # noinspection PyMethodMayBeStatic
     def convert_date(self, date):
-        """converts a date/datetime to a format that Pushshift can read"""
+        """converts a date/datetime  to a unix so that Pushshift can understand it"""
         datetime = str(date).split(" ")
         if len(datetime) == 1:
             datetime = datetime[0] + " 00:00:00"
         else:
-            datetime = datetime[0] + " " + datetime[1]
+            datetime = date
 
         return int(dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S').timestamp())
 
-    def retrieve_submissions(self, subreddit, start, end):
-        """
-        Returns a dataframe containing comments from a particular subreddit between
-        given date frame defined by before and after.
-        Before and after variables must be converted to epoch time before calling them as arguments.
-        """
-        end = self.convert_date(end)
+    def generic_algorithm(self, subreddits, start, end):
         start = self.convert_date(start)
+        end = self.convert_date(end)
+        api = PushshiftAPI(shards_down_behavior="None")
 
-        api = PushshiftAPI()
-        comments = api.search_comments(subreddit=subreddit, before=end, after=start)
-        comments_df = pd.DataFrame(comments)
-        return comments_df
+        print("fetching posts in the data range")
+        posts = api.search_submissions(subreddit=subreddits, before=end, after=start)
+        posts_df = pd.DataFrame(posts).loc[:,
+                   [ "id", "author", "created_utc", "title", "selftext", "score", "url",
+                      "domain", "full_link", "subreddit"]]
+        print(posts_df)
 
-    # noinspection PyMethodMayBeStatic
-    def clean_submissions(self, df):
-        """Cleans data, removes unwanted fields"""
-        clean_df = df.loc[:, ['id', 'created_utc', 'body']]
-        clean_df["created_utc"] = clean_df["created_utc"] .apply(lambda d: dt.datetime.fromtimestamp(int(d)).strftime('%Y-%m-%d %H:%M:%S'))
-        clean_df = clean_df.replace({"body": {',': '', '\n': '', "'": '', '"': '', r'http\S+': ''}}, regex=True)
-        return clean_df
+        print("fetching comments in the data range")
+        comments = api.search_comments(subreddit=subreddits, before=end, after=start)
+        comments_df = pd.DataFrame(comments).loc[:,
+                      [ "author", "author_fullname", "author_created_utc", "id",
+                        "created_utc", "body", "score", "nest_level", "parent_id", "link_id"] ]
+        print(comments_df)
+
+        print("use ML to find tickers and options")
 
     # noinspection PyMethodMayBeStatic
     def log_submissions(self, df):
