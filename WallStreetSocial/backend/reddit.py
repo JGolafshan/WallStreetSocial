@@ -1,11 +1,12 @@
 import pprint
-
+from WallStreetSocial.backend import database
 from pmaw import PushshiftAPI
 import datetime as dt
 import pandas as pd
 import os
 
-pd.set_option('display.max_columns', 100)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_colwidth', 50000)
 
 
 class RedditPipe:
@@ -30,26 +31,22 @@ class RedditPipe:
 
         return int(dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S').timestamp())
 
-    def generic_algorithm(self, subreddits, start, end):
+    def generic_algorithm(self, subreddits, start, end, comment_filter=None, post_filter=None):
         start = self.convert_date(start)
         end = self.convert_date(end)
         api = PushshiftAPI(shards_down_behavior="None")
+        db = database.DatabasePipe()
 
         print("fetching posts in the data range")
         posts = api.search_submissions(subreddit=subreddits, before=end, after=start)
-        posts_df = pd.DataFrame(posts).loc[:,
-                   [ "id", "author", "created_utc", "title", "selftext", "score", "url",
-                      "domain", "full_link", "subreddit"]]
-        print(posts_df)
+        post_df = pd.DataFrame(posts)
+        dbc_post = database.ModifyDatabase(connection=db, table="post", dataframe=post_df)
+        dbc_post.main_function()
 
-        print("fetching comments in the data range")
         comments = api.search_comments(subreddit=subreddits, before=end, after=start)
-        comments_df = pd.DataFrame(comments).loc[:,
-                      [ "author", "author_fullname", "author_created_utc", "id",
-                        "created_utc", "body", "score", "nest_level", "parent_id", "link_id"] ]
-        print(comments_df)
-
-        print("use ML to find tickers and options")
+        comment_df = pd.DataFrame(comments)
+        dbc_comment = database.ModifyDatabase(connection=db, table="comment", dataframe=comment_df)
+        dbc_comment.main_function()
 
     # noinspection PyMethodMayBeStatic
     def log_submissions(self, df):

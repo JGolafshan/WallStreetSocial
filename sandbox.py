@@ -3,22 +3,7 @@ from WallStreetSocial.backend import database
 
 reddit = reddit.RedditPipe()
 createDB = database.DatabasePipe()
+# comment_filter=["id", "body", "created_utc"], post_filter=["id", "selftext", "title", "created_utc"]
 
-
-def redditStack():
-    # Pulls comments from reddit and adds them to SQLITE DB
-    comments_df = reddit.retrieve_submissions("WallStreetBets", start="2018-08-04", end="2018-08-8")
-    final_df = reddit.clean_submissions(comments_df)
-    addToDB = createDB.insert_into_comments(final_df)
-    return addToDB
-
-
-def DatabasePipeline():
-    # Create DB/Tables
-    createDB.table_automation()
-    # Pulls comments and adds them to the DB
-    redditStack()
-    # Finds Tickers
-    createDB.ticker_generation()
-
+reddit.generic_algorithm("WallStreetBets", start="2020-08-05 00:00:00", end="2020-08-05 00:02:40")
 
