@@ -27,6 +27,7 @@ class RedditPipe:
         return int(dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S').timestamp())
 
     def generic_algorithm(self, subreddits, start, end, comment_filter=None, post_filter=None):
+
         start = self.convert_date(start)
         end = self.convert_date(end)
         api = PushshiftAPI(shards_down_behavior="None")
@@ -49,10 +50,9 @@ class RedditPipe:
         Converts the dataframe to CSV which is saved for logging/debugging purposes.
         Which can be found in /dependencies/logs
         """
-        dir_name = os.path.dirname(os.path.abspath(__file__))
+        dir_name = os.path.dirname(os.path.dirname(__file__))
         folder = 'temp'
         file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M")
-
         path = f"{dir_name}\{folder}\{file_name}.csv"
         df.to_csv(path, encoding='utf-8-sig', index=False)
         return path
