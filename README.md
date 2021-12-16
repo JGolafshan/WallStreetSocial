@@ -1,6 +1,11 @@
 # Wall Street Social
 Is an open source piece of software that is designed to allow anyone to quickly get familiar with the basics of textual analysis. It features a preconfigured database schema, preconfigured pipelines to fill the database with reddit comments, and a pretrained named entity recognition model that is used to pull out what stocks are being mentioned in a post.
 
+## Getting Starting
+This doesnt not fit the pypi size specifications, to get this project working you will need to download the project from github.
+
+You can use sandbox.py to test the program, 
+
 ## Documentation
 Documentaton of this project can be found [here](https://github.com/JGolafshan/WallStreetSocial/wiki)
 
