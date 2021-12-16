@@ -1,3 +1,9 @@
+# Important!!
+**Over the past few days, this project has generated some attention. Since this project is still in its developmental stage, some or all of the code may be broken in its current state.**
+
+**However, an outdated version with basic code impementation is available. [here](https://github.com/JGolafshan/WallStreetSocial/releases/tag/v1.0.0-alpha)**
+
+
 # Wall Street Social
 Is an open source piece of software that is designed to allow anyone to quickly get familiar with the basics of textual analysis. It features a preconfigured database schema, preconfigured pipelines to fill the database with reddit comments, and a pretrained named entity recognition model that is used to pull out what stocks are being mentioned in a post.
 
