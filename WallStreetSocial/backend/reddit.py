@@ -51,7 +51,7 @@ class RedditPipe:
         df.to_csv(path, encoding='utf-8-sig', index=False)
         return path
 
-    def generic_algorithm(self, subreddits, start, end):
+    def run(self, subreddits, start, end):
 
         start = self.convert_date(start)
         end = self.convert_date(end)
