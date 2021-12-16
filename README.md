@@ -4,7 +4,7 @@ Is an open source piece of software that is designed to allow anyone to quickly 
 ## Getting Starting
 This doesnt not fit the pypi size specifications, to get this project working you will need to download the project from github.
 
-You can use sandbox.py to test the program, 
+You can use sandbox.py to test the program, to utilize dash you must run index.py which is in WallStreetSocial -> app
 
 ## Documentation
 Documentaton of this project can be found [here](https://github.com/JGolafshan/WallStreetSocial/wiki)
