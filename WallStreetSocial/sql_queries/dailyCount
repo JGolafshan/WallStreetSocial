@@ -1,0 +1,11 @@
+SELECT t.TickerSymbol,
+        (SELECT count(p.TickerSymbol) 
+        FROM Ticker p
+        WHERE p.TickerSentiment BETWEEN 0.0001 AND 1 AND t.TickerSymbol = p.TickerSymbol) AS [Positive], 
+       count(*) AS Total,
+       strftime('%Y-%m-%d', c.CommentPostDate) AS Day
+FROM Comment c, Ticker t
+WHERE c.CommentPostDate BETWEEN "2018-08-04" AND "2018-08-07" AND 
+       t.TickerSymbol = "TSLA" AND 
+       t.CommentID = c.CommentID
+GROUP BY Day
