@@ -36,9 +36,9 @@ def find_common_terms(symbol):
     query = db.cursor.execute(f"""
     SELECT 
        t.TickerSymbol,
-       c.CommentText
+       c.body
     FROM Ticker t INNER JOIN Comment c
-    ON t.CommentID = c.CommentID
+    ON t.CommentID = c.comment_iD
     WHERE t.TickerSymbol ="{symbol}";
     """).fetchall()
     en_stops = set(stopwords.words('english'))
