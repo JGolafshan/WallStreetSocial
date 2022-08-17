@@ -1,4 +1,4 @@
-from WallStreetSocial.backend import database
+from WallStreetSocial import database
 from pmaw import PushshiftAPI
 import datetime as dt
 import os

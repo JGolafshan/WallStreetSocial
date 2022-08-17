@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from WallStreetSocial.backend import database
+from WallStreetSocial import database
 from assets.plotly_app_functions import find_common_terms
 from dash.dependencies import Input, Output, State
 

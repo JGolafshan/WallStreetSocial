@@ -2,7 +2,7 @@ import math
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from WallStreetSocial.backend import database
+from WallStreetSocial import database
 
 
 def millify(n):
