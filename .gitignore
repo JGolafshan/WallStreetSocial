@@ -1,6 +1,5 @@
 /venv/
 /.idea/
-/keno_api.egg-info/
 /__pycache__/
 /.github/
 /dist/
@@ -8,6 +7,3 @@
 *.gz
 *.txt
 *.pyc
-
-WallStreetSocial/build/lib/keno/keno_app.py
-WallStreetSocial.egg-info

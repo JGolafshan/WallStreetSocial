@@ -1,42 +1,39 @@
 from setuptools import setup, find_packages
-import pathlib
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-
     name="WallStreetSocial",
     version="0.4",
     author=["Joshua David Golafshan", "John Hutton"],
     description="""Is an open source piece of software that is designed to allow anyone to quickly get
-                familiar with the basics of textual analysis.""",
+                    familiar with the basics of textual analysis.""",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/JGolafshan/WallStreetSocial",
     keywords=["Database", "WallStreetBets", "Reddit"],
     packages=find_packages(),
-    install_requires=[
-        'setuptools',
-        'dash',
-        'yfinance',
-        'plotly',
-        'matplotlib',
-        'pandas',
-        'gensim',
-        'datetime',
-        'pmaw',
-        'spacy',
-        'vaderSentiment',
-        'numpy',
-        'nltk',
-        'requests',
-        'dash-bootstrap-components'
-    ],
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ]
+    include_package_data=True,
+    install_requires=['setuptools',
+                      'dash',
+                      'yfinance',
+                      'plotly',
+                      'matplotlib',
+                      'pandas',
+                      'gensim',
+                      'datetime',
+                      'pmaw',
+                      'spacy',
+                      'vaderSentiment',
+                      'numpy',
+                      'nltk',
+                      'requests',
+                      'dash-bootstrap-components',
+                      ],
+    classifiers=["Programming Language :: Python :: 3",
+                 "Operating System :: OS Independent",
+                 ]
 )
 
 """
