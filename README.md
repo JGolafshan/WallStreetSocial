@@ -3,12 +3,12 @@ Is an open source piece of software that is
 designed to allow anyone to quickly get familiar with the basics of textual analysis. It features a preconfigured database schema, preconfigured pipelines to fill the database with reddit comments, and a pretrained named entity recognition model that is used to pull out what stocks are being mentioned in a post.
 
 ## Getting Starting
-This doesn't fit the pypi size specifications, to get this project working you will need the these steps.
+This project model doesn't fit the pypi size specifications, to get this project working you will need the these steps.
 
 ```
 pypi WallStreetBets
-
 ```
+
 Download Model [here](https://github.com/JGolafshan/WallStreetSocial/blob/master/wsb_ner.zip)
 
 unzip anywhere
@@ -16,7 +16,9 @@ unzip anywhere
 ```
 from WallStreetSocial import helpers
 from WallStreetSocial import database
-database.model_loc = "C:\\Users\\JGola\\PycharmProjects\\WallStreetSocial\\WallStreetSocial\\wsb_ner\\"
+
+database.model_loc = "{unzipped_folder_location}"
+
 helpers.run("WallStreetBets", start="2015-07-03 00:00:00", end="2015-07-06 03:01:40")
 ```
 
