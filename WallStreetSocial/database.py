@@ -3,7 +3,7 @@ import sqlite3
 import spacy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from WallStreetSocial.preprocess import preprocess
-
+model_loc = None
 
 class DatabasePipe:
     def __init__(self):
@@ -101,7 +101,7 @@ class DatabasePipe:
     def ticker_generation(self):
         loadData = self.cursor.execute("""SELECT c.comment_id, c.body FROM comment c 
                                         WHERE c.comment_id NOT IN (SELECT t.CommentID FROM ticker t)""").fetchall()
-        wsb = spacy.load(os.getcwd() + "/WallStreetSocial/wsb_ner")
+        wsb = spacy.load(model_loc)
         sia = SentimentIntensityAnalyzer()
         # Add to Ticker DB
         for row in loadData:
