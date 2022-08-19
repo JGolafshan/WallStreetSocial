@@ -4,11 +4,10 @@ import pandas as pd
 from app import app
 import datetime as dt
 import yfinance as yf
+from dash import dcc, html
 import plotly.express as px
 import dash_extensions as de
 import plotly.graph_objects as go
-import dash_core_components as dcc
-import dash_html_components as html
 import dash_bootstrap_components as dbc
 from WallStreetSocial import database
 from assets.plotly_app_functions import find_common_terms
