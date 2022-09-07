@@ -17,13 +17,11 @@ unzip anywhere
 from WallStreetSocial import helpers
 from WallStreetSocial import database
 
-database.model_loc = "{unzipped_folder_location}"
-
-helpers.run("WallStreetBets", start="2015-07-03 00:00:00", end="2015-07-06 03:01:40")
+helpers.validate_model(location of downloaded model)
+helpers.run("WallStreetBets", start="2019-01-03", end="2019-01-04")
+symbol = helpers.SummariseBase(symbol="TSLA", start_date="2019-01-03", end_date="2019-12-03")
+symbol.display_stats()
 ```
-
-## Documentation
-Documentation of this project can be found [here](https://github.com/JGolafshan/WallStreetSocial/wiki)
 
 ## About the ML Model
 The named entity recognition model in use is a compact spaCy model which has been trained on wallstreetbets specific data. The model has been trained in two parts: first, Gensim was used to create the word vectors. Word vectors are basically multidimensional representations of words in algebraic space that help the model determine things like word similarity. It helps give the model some form of contextual awareness of the words it is encountering. The model is then trained specifically on data from reddit. The data consists of thousands of comments that have labeled stocks and their respective positions in the text. For a visual representation of the word vectors, please see https://www.kaggle.com/johnhutton/visualization-of-wallstreetbets-word-vectors
