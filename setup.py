@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="WallStreetSocial",
-    version="1.0.0.0",
+    version="1.0.0.3",
     author=["Joshua David Golafshan", "John Hutton"],
     description="""Is an open source piece of software that is designed to allow anyone to quickly get
                     familiar with the basics of textual analysis.""",
@@ -16,9 +16,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=['setuptools',
-                      'dash',
                       'yfinance',
-                      'plotly',
                       'matplotlib',
                       'pandas',
                       'gensim',
@@ -29,7 +27,6 @@ setup(
                       'numpy',
                       'nltk',
                       'requests',
-                      'dash-bootstrap-components',
                       ],
     classifiers=["Programming Language :: Python :: 3",
                  "Operating System :: OS Independent",
