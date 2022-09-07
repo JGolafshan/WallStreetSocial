@@ -55,21 +55,7 @@ class SummariseBase:
         return df_resized
 
     def display_stats(self):
-        symbol_history = yf.Ticker(self.symbol).history(start=self.start_date, end=self.end_date)
-        data_df = self.summarise_symbol()
-
-        # Word Graph
-        fig = plt.figure()
-        gs = fig.add_gridspec(3, hspace=0.4)
-        axs = gs.subplots(sharex=True)
-
-        #fig.suptitle(f'{self.symbol} Stock between the {self.start_date} and {self.end_date}')
-
-        axs[1].set_title("Stock Sentiment")
-        axs[1].plot(data_df["Average Sentiment"], label="Average Sentiment")
-        axs[1].legend()
-
-        plt.show()
+        pass
 
 
 def unique_symbols():
