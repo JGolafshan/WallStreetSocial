@@ -1,132 +1,102 @@
+from matplotlib import pyplot as plt
 from WallStreetSocial import database
 from pmaw import PushshiftAPI
+import yfinance as yf
 import datetime as dt
 import pandas as pd
 import os
 
 
-class TickerBits(object):
-    def __int__(self, symbol='', start_date='', end_date='',
-                total_count=0, neutral_count=0, positive_count=0, negative_count=0,
-                average_sentiment=0.0, positive_sentiment=0.0, negative_sentiment=0.0,
-                positive_vectors=None, negative_vectors=None, cc_vectors=None, daily_bars=None, weekly_bars=None):
+class SummariseBase:
+    def __init__(self, symbol, subreddit='', start_date='', end_date=''):
         self.symbol = symbol
+        self.subreddit = subreddit
         self.start_date = start_date
         self.end_date = end_date
+        self.db = database.DatabasePipe()
 
-        self.total_count = total_count
-        self.neutral_count = neutral_count
-        self.positive_count = positive_count
-        self.negative_count = negative_count
+    def has_symbol(self):
+        """
+        checks to see if a symbol exists
+        """
+        db = database.DatabasePipe()
+        symbol_query = f"""SELECT DISTINCT(TickerSymbol) FROM ticker WHERE TickerSymbol = "{self.symbol}" """
+        symbols = db.cursor.execute(symbol_query).fetchall()
 
-        self.average_sentiment = average_sentiment
-        self.positive_sentiment = positive_sentiment
-        self.negative_sentiment = negative_sentiment
+        if symbols is None or len(symbols) == 0:
+            return False
 
-        self.positive_vectors = positive_vectors
-        self.negative_vectors = negative_vectors
-        self.cc_vectors = cc_vectors
+        else:
+            return True
 
-        self.daily_bars = daily_bars
-        self.weekly_bars = weekly_bars
+    def summarise_symbol(self):
+        query = f"""SELECT TickerSymbol, created_utc,  
+                    strftime('%Y-%m-%d', datetime(created_utc, 'unixepoch')) as [DAY],TickerSentiment
+                    FROM Comment c, Ticker t
+                    WHERE t.TickerSymbol = "{self.symbol}" AND t.CommentID = c.comment_id
+                    AND DAY Between {self.start_date} AND {self.end_date}"""
+
+        return_values = self.db.cursor.execute(query).fetchall()
+
+        df = pd.DataFrame(return_values, columns=["symbol", "utc", "dt", "sentiment"])
+        df.set_index("dt", inplace=True)
+
+        total_count = df.groupby('dt')['sentiment'].count().reset_index(name="Total Count")
+        pos_count = df.groupby('dt')['sentiment'].apply(lambda x: (x > 0).sum()).reset_index(name="Positive Count")
+        neg_count = df.groupby('dt')['sentiment'].apply(lambda x: (x < 0).sum()).reset_index(name="Negative Count")
+        neutral_count = df.groupby('dt')['sentiment'].apply(lambda x: (x == 0).sum()).reset_index(name="Neutral Count")
+        pos_sentiment = df.groupby('dt')['sentiment'].apply(lambda x: x.mean()).reset_index(name="AVG Sentiment")
+
+        df_resized = pd.DataFrame(data=pos_count)
+        df_resized["Negative Count"] = neg_count["Negative Count"]
+        df_resized["Neutral Count"] = neutral_count["Neutral Count"]
+        df_resized["Total Count"] = total_count["Total Count"]
+        df_resized["Average Sentiment"] = pos_sentiment["AVG Sentiment"]
+        return df_resized
+
+    def display_stats(self):
+        symbol_history = yf.Ticker(self.symbol).history(start=self.start_date, end=self.end_date)
+        data_df = self.summarise_symbol()
+
+        # Word Graph
+        fig = plt.figure()
+        gs = fig.add_gridspec(3, hspace=0.4)
+        axs = gs.subplots(sharex=True)
+
+        #fig.suptitle(f'{self.symbol} Stock between the {self.start_date} and {self.end_date}')
+
+        axs[1].set_title("Stock Sentiment")
+        axs[1].plot(data_df["Average Sentiment"], label="Average Sentiment")
+        axs[1].legend()
+
+        plt.show()
 
 
-class SummariseBase(TickerBits):
-    def __str__(self):
-        to_join = list()
-        to_join.append('Symbol: {}'.format(self.symbol))
-        to_join.append('Start Date: {}'.format(self.start_date))
-        to_join.append('End Date: {}'.format(self.end_date))
+def unique_symbols():
+    """
+    list of every unique symbol
+    Returns: a list of every unique symbol
 
-        to_join.append('--------------------------------')
-
-        to_join.append('Total Count: {}'.format(self.total_count))
-        to_join.append('Neutral Count: {}'.format(self.neutral_count))
-        to_join.append('Positive Count: {}'.format(self.positive_count))
-        to_join.append('Negative Count: {}'.format(self.negative_count))
-
-        to_join.append('--------------------------------')
-
-        to_join.append('Average Sentiment: {}'.format(self.average_sentiment))
-        to_join.append('Positive Sentiment: {}'.format(self.positive_sentiment))
-        to_join.append('Negative Sentiment: {}'.format(self.negative_sentiment))
-
-        to_join.append('--------------------------------')
-
-        to_join.append('Positive Related Vectors: {}'.format(self.positive_vectors))
-        to_join.append('Negative Related Vectors: {}'.format(self.negative_vectors))
-        to_join.append('Cross Contaminated Vectors: {}'.format(self.cc_vectors))
-
-        to_join.append('--------------------------------')
-        to_join.append('Daily : {}'.format(self.daily_bars))
-        to_join.append('Weekly : {}'.format(self.weekly_bars))
-
-        return '\n'.join(to_join)
-
-
-def summarise_symbol(symbol):
+    """
     db = database.DatabasePipe()
-    base = SummariseBase()
+    symbol_query = """SELECT DISTINCT(TickerSymbol) FROM ticker"""
+    symbols = db.cursor.execute(symbol_query).fetchall()
+    return [x for sublist in symbols for x in sublist]
 
-    summary_query = f"""
-        SELECT t.TickerSymbol,
-        (SELECT count(p.TickerSymbol) FROM Ticker p
-            WHERE p.TickerSentiment BETWEEN 0.0001 AND 1 AND t.TickerSymbol = p.TickerSymbol) AS [Positive Count],
-            
-        (SELECT count(p.TickerSymbol) FROM Ticker p
-            WHERE p.TickerSentiment BETWEEN -1 AND -0.0001 AND t.TickerSymbol = p.TickerSymbol) AS [Negative Count], 
-        
-        (SELECT count(p.TickerSymbol) FROM Ticker p
-            WHERE p.TickerSentiment is 0 AND t.TickerSymbol = p.TickerSymbol) AS [Neutral Count],
-            
-        count(*) AS Total,
-            
-        (SELECT AVG(p.TickerSentiment) FROM Ticker p
-            WHERE p.TickerSentiment BETWEEN 0.0001 AND 1 AND t.TickerSymbol = p.TickerSymbol) AS [Positive Sentiment],
-            
-        (SELECT AVG(p.TickerSentiment) FROM Ticker p
-            WHERE p.TickerSentiment BETWEEN -1 AND -0.0001 AND t.TickerSymbol = p.TickerSymbol) AS [Negative Sentiment],
-            
-        (SELECT AVG(p.TickerSentiment) FROM Ticker p
-            WHERE t.TickerSymbol = p.TickerSymbol) AS [AVG Sentiment]
-        
-    FROM Comment c, Ticker t
-    WHERE 
-        t.TickerSymbol = '{symbol}' AND t.CommentID = c.comment_id
+
+def validate_model(path):
     """
-    query = db.cursor.execute(summary_query).fetchone()
-
-    daily_bars_query = f"""
-    
-    SELECT t.TickerSymbol, 
-            count(*), 
-            strftime('%Y-%m-%d', datetime(created_utc, 'unixepoch')) as [DAY]                
-            FROM Comment c, Ticker t
-            WHERE t.TickerSymbol = "{symbol}" AND t.CommentID = c.comment_id
-            GROUP BY DAY
+    checks to see if the user has specified a path for the model
     """
-    query_2 = db.cursor.execute(daily_bars_query).fetchall()
+    if database.model_loc == '':
+        exit("model has no location - please use this link to download the model\n"
+             "https://github.com/JGolafshan/WallStreetSocial/blob/master/wsb_ner.zip")
+    elif os.path.isdir(path) is False:
+        exit("could not find path")
 
-    base.symbol = query[0]
-    base.start_date = ''
-    base.end_date = ''
-
-    base.positive_count = query[1]
-    base.negative_count = query[2]
-    base.neutral_count = query[3]
-    base.total_count = query[4]
-    base.positive_sentiment = query[5]
-    base.negative_sentiment = query[6]
-    base.average_sentiment = query[7]
-
-    base.positive_vectors = None
-    base.negative_vectors = None
-    base.cc_vectors = None
-
-    base.daily_bars = query_2
-    base.weekly_bars = query_2
-
-    return base
+    database.model_loc = path
+    print("Model Found!")
+    return database.model_loc
 
 
 def convert_date(date):
@@ -158,7 +128,7 @@ def log_submissions(df):
     Returns:
         Returns a unix timestamp
     """
-    dir_name = os.path.dirname(os.path.dirname(__file__))
+    dir_name = os.path.dirname(os.getcwd())
     folder = 'temp'
     file_name = 'wsb_comments_' + dt.datetime.now().strftime("%Y_%m_%d_%I_%M")
     path = f"{dir_name}\{folder}\{file_name}.csv"
