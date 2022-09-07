@@ -17,7 +17,7 @@ unzip anywhere
 from WallStreetSocial import helpers
 from WallStreetSocial import database
 
-database.model_loc = "{unzipped_folder_location}"
+database.model_loc = "unzipped_folder_location"
 
 helpers.run("WallStreetBets", start="2015-07-03 00:00:00", end="2015-07-06 03:01:40")
 ```
