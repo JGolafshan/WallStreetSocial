@@ -1,6 +1,7 @@
-from matplotlib import pyplot as plt
 from WallStreetSocial import database
 from pmaw import PushshiftAPI
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import yfinance as yf
 import datetime as dt
 import pandas as pd
@@ -8,11 +9,9 @@ import os
 
 
 class SummariseBase:
-    def __init__(self, symbol, subreddit='', start_date='', end_date=''):
+    def __init__(self, symbol, subreddit=''):
         self.symbol = symbol
         self.subreddit = subreddit
-        self.start_date = start_date
-        self.end_date = end_date
         self.db = database.DatabasePipe()
 
     def has_symbol(self):
@@ -34,7 +33,7 @@ class SummariseBase:
                     strftime('%Y-%m-%d', datetime(created_utc, 'unixepoch')) as [DAY],TickerSentiment
                     FROM Comment c, Ticker t
                     WHERE t.TickerSymbol = "{self.symbol}" AND t.CommentID = c.comment_id
-                    AND DAY Between {self.start_date} AND {self.end_date}"""
+                    """
 
         return_values = self.db.cursor.execute(query).fetchall()
 
@@ -55,7 +54,38 @@ class SummariseBase:
         return df_resized
 
     def display_stats(self):
-        pass
+        """
+        create a simple interactive view from the data
+        """
+
+        df = self.summarise_symbol()
+        history = yf.Ticker(self.symbol).history(start=df["dt"][0], end=df["dt"][len(df.index) - 1])
+
+        fig = make_subplots(rows=4, cols=2,
+                            specs=[[{"colspan": 2}, None],
+                                   [{"colspan": 2}, None],
+                                   [{"colspan": 2}, None],
+                                   [{"colspan": 1}, {"colspan": 1}]],
+                            subplot_titles=["Mentions", "Stock Price", "Sentiment"],
+                            row_heights=[2, 2, 1, 0])
+
+        trace_1 = go.Bar(name="Positive Count", x=df["dt"], y=df["Positive Count"], offsetgroup=0)
+        trace_2 = go.Bar(name="Negative Count", x=df["dt"], y=df["Negative Count"], offsetgroup=0,
+                         base=df["Positive Count"])
+        trace_3 = go.Bar(name="Neutral Count", x=df["dt"], y=df["Neutral Count"], offsetgroup=0,
+                         base=df["Negative Count"] + df["Positive Count"])
+
+        yf_trace = go.Scatter(x=history.index, y=history["Open"], name=f"{self.symbol} Price")
+        sentiment = go.Scatter(x=df["dt"], y=df["Average Sentiment"], name="Sentiment")
+
+        fig.add_trace(trace_1, 1, 1)
+        fig.add_trace(trace_2, 1, 1)
+        fig.add_trace(trace_3, 1, 1)
+        fig.add_trace(yf_trace, 2, 1)
+        fig.add_trace(sentiment, 3, 1)
+        fig.update_layout(showlegend=False)
+        fig.update_layout()
+        fig.show()
 
 
 def unique_symbols():
@@ -77,12 +107,12 @@ def validate_model(path):
     if database.model_loc == '':
         exit("model has no location - please use this link to download the model\n"
              "https://github.com/JGolafshan/WallStreetSocial/blob/master/wsb_ner.zip")
-    elif os.path.isdir(path) is False:
+    if os.path.isdir(path) is False:
         exit("could not find path")
-
-    database.model_loc = path
-    print("Model Found!")
-    return database.model_loc
+    else:
+        database.model_loc = path
+        print("Model Found!")
+        return database.model_loc
 
 
 def convert_date(date):
@@ -123,6 +153,11 @@ def log_submissions(df):
 
 
 def run(subreddits, start, end):
+    """
+    Fetches comments and posts from a subreddit between a date range
+    adds it to the database,
+    then it create tick entries inside the ticker table
+    """
     start = convert_date(start)
     end = convert_date(end)
     api = PushshiftAPI(shards_down_behavior="None")

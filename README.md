@@ -15,12 +15,17 @@ unzip anywhere
 
 ```
 from WallStreetSocial import helpers
-from WallStreetSocial import database
 
-helpers.validate_model(location of downloaded model)
-helpers.run("WallStreetBets", start="2019-01-03", end="2019-01-04")
-symbol = helpers.SummariseBase(symbol="TSLA", start_date="2019-01-03", end_date="2019-12-03")
+# Uses model to find ticks in the data comment table
+helpers.validate_model('C:Projects\\WallStreetSocial\\wsb_ner')
+
+# Fetches Comments and Posts from a subreddit between two dates
+helpers.run("WallStreetBets", start="2019-01-03", end="2019-02-04")
+
+
+symbol = helpers.SummariseBase(symbol="AAPL")
 symbol.display_stats()
+
 ```
 
 ## About the ML Model

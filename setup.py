@@ -19,6 +19,7 @@ setup(
                       'yfinance',
                       'matplotlib',
                       'pandas',
+                      'plotly',
                       'gensim',
                       'datetime',
                       'pmaw',
