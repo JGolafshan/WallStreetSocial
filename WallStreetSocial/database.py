@@ -59,9 +59,7 @@ Ticker.options = relationship("Option", order_by=Option.option_id, back_populate
 
 class DatabasePipe:
     def __init__(self):
-        base_folder = os.path.dirname(os.path.abspath(os.curdir))
-        db_path = os.path.join(base_folder, 'WallStreetBets.db')
-        self.engine = create_engine(f'sqlite:///{db_path}')
+        self.engine = create_engine(f'sqlite:///WallStreetBets.db')
 
         Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)

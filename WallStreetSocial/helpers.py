@@ -1,8 +1,10 @@
 import datetime as dt
 import os
 import ijson
+import pandas as pd
+from pmaw import PushshiftAPI
 from WallStreetSocial import database
-from database import Ticker, Comment
+from database import Comment
 
 
 def validate_model(path):
@@ -89,23 +91,22 @@ def run(subreddits, start, end):
     adds it to the database,
     then it create tick entries inside the ticker table
     """
-    return "This is broken"
-    # start = convert_date(start)
-    # end = convert_date(end)
-    # api = PushshiftAPI(shards_down_behavior="None")
-    # db = database.DatabasePipe()
-    # db.create_database()
-    #
-    # print("fetching posts in the data range")
-    # posts = api.search_submissions(subreddit=subreddits, before=end, after=start)
-    # posts_df = pd.DataFrame(posts.responses)
-    # posts_df = posts_df.filter(["author", "subreddit", "url", "title", "created_utc", "score"])
-    # db.insert_into_row("post", posts_df)
-    #
-    # print("fetching comments in the data range")
-    # comments = api.search_comments(subreddit=subreddits, before=end, after=start)
-    # comment_df = pd.DataFrame(comments.responses)
-    # comment_df = comment_df.filter(["permalink", "subreddit", "author", "body", "score", "created_utc"])
-    # db.insert_into_row("comment", comment_df)
-    #
-    # db.ticker_generation()
+
+    start = convert_date(start)
+    end = convert_date(end)
+    api = PushshiftAPI(shards_down_behavior="None")
+    db = database.DatabasePipe()
+
+    print("fetching posts in the data range")
+    posts = api.search_submissions(subreddit=subreddits, before=end, after=start)
+    posts_df = pd.DataFrame(posts.responses)
+    posts_df = posts_df.filter(["author", "subreddit", "url", "title", "created_utc", "score"])
+    db.insert_into_row("post", posts_df)
+
+    print("fetching comments in the data range")
+    comments = api.search_comments(subreddit=subreddits, before=end, after=start)
+    comment_df = pd.DataFrame(comments.responses)
+    comment_df = comment_df.filter(["permalink", "subreddit", "author", "body", "score", "created_utc"])
+    db.insert_into_row("comment", comment_df)
+
+    db.ticker_generation()

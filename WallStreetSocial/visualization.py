@@ -3,7 +3,6 @@ import plotly.graph_objects as go
 import yfinance as yf
 from plotly.subplots import make_subplots
 from sqlalchemy import func
-
 from WallStreetSocial import database
 from database import Ticker, Comment
 
@@ -23,8 +22,8 @@ class SummariseBase:
 
     def summarise_symbol(self):
         """
-            Retrieves ticker data including TickerSymbol, created_utc, DAY, and TickerSentiment.
-            """
+        Retrieves ticker data including TickerSymbol, created_utc, DAY, and TickerSentiment.
+        """
         subquery = (
             self.db.session.query(
                 Comment.comment_id,
@@ -65,34 +64,46 @@ class SummariseBase:
 
     def display_stats(self):
         """
-        create a simple interactive view from the data
+        Create a simple interactive view from the data.
         """
-
         df = self.summarise_symbol()
-        history = yf.Ticker(self.symbol).history(start=df["dt"][0], end=df["dt"][len(df.index) - 1])
+        history = yf.Ticker(self.symbol).history(start=df.index[0], end=df.index[-1])
 
-        fig = make_subplots(rows=4, cols=2,
-                            specs=[[{"colspan": 2}, None],
-                                   [{"colspan": 2}, None],
-                                   [{"colspan": 2}, None],
-                                   [{"colspan": 1}, {"colspan": 1}]],
-                            subplot_titles=["Mentions", "Stock Price", "Sentiment"],
-                            row_heights=[2, 2, 1, 0])
+        fig = make_subplots(rows=3, cols=1,
+                            shared_xaxes=True,
+                            vertical_spacing=0.1,
+                            subplot_titles=["Mentions by Sentiment", "Stock Price", "Average Sentiment"])
 
-        trace_1 = go.Bar(name="Positive Count", x=df["dt"], y=df["Positive Count"], offsetgroup=0)
-        trace_2 = go.Bar(name="Negative Count", x=df["dt"], y=df["Negative Count"], offsetgroup=0,
-                         base=df["Positive Count"])
-        trace_3 = go.Bar(name="Neutral Count", x=df["dt"], y=df["Neutral Count"], offsetgroup=0,
-                         base=df["Negative Count"] + df["Positive Count"])
+        # Mentions by sentiment (stacked bar chart)
+        trace_pos = go.Bar(name="Positive", x=df.index, y=df["Positive Count"], marker_color='green')
+        trace_neg = go.Bar(name="Negative", x=df.index, y=df["Negative Count"], marker_color='red')
+        trace_neutral = go.Bar(name="Neutral", x=df.index, y=df["Neutral Count"], marker_color='gray')
 
-        yf_trace = go.Scatter(x=history.index, y=history["Open"], name=f"{self.symbol} Price")
-        sentiment = go.Scatter(x=df["dt"], y=df["Average Sentiment"], name="Sentiment")
+        # Stock price (line chart)
+        trace_price = go.Scatter(x=history.index, y=history["Close"], mode='lines', name=f"{self.symbol} Price",
+                                 line=dict(color='blue'))
 
-        fig.add_trace(trace_1, 1, 1)
-        fig.add_trace(trace_2, 1, 1)
-        fig.add_trace(trace_3, 1, 1)
-        fig.add_trace(yf_trace, 2, 1)
-        fig.add_trace(sentiment, 3, 1)
-        fig.update_layout(showlegend=False)
-        fig.update_layout()
+        # Average sentiment (line chart)
+        trace_sentiment = go.Scatter(x=df.index, y=df["Average Sentiment"], mode='lines+markers',
+                                     name="Average Sentiment", line=dict(color='orange'))
+
+        # Add traces to figure
+        fig.add_trace(trace_pos, row=1, col=1)
+        fig.add_trace(trace_neg, row=1, col=1)
+        fig.add_trace(trace_neutral, row=1, col=1)
+        fig.add_trace(trace_price, row=2, col=1)
+        fig.add_trace(trace_sentiment, row=3, col=1)
+
+        # Update layout for better visualization
+        fig.update_layout(barmode='stack', title_text=f"Summary for {self.symbol}", height=800,
+                          xaxis=dict(type='category'),
+                          legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+
+        fig.update_yaxes(title_text="Mentions", row=1, col=1)
+        fig.update_yaxes(title_text="Stock Price (USD)", row=2, col=1)
+        fig.update_yaxes(title_text="Average Sentiment", row=3, col=1)
+
+        fig.update_xaxes(title_text="Date")
+
+        # Show the figure
         fig.show()
